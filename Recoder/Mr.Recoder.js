@@ -131,8 +131,8 @@
 						this.visitVariable(item);
 						return true;
 					case 'stat':
-						var name = item[1][0];
-						if(name == 'assign' || name == 'call'){
+						var statName = item[1][0];
+						if(statName == 'assign' || (statName == 'call' && item[1][1][1] != null)){
 							this._visitAwait(item[1], afterStatSameLevel);
 							return true;
 						}
@@ -207,7 +207,7 @@
 			var assignStatement = justMethodCall | expression[0] == 'assign';
 			var variableName = justMethodCall ? null : assignStatement ? expression[2][1] : expression[0];
 			var parameters = justMethodCall ? expression[2] : assignStatement ? expression[3][2] : expression[1][2];
-
+			
 			if(parameters.length == 0){
 				throw 'no parameter in $await method.';
 			}
@@ -300,7 +300,7 @@
 		}
 	});
 
-	var ext = ['getCode', 'visit'];
+	var ext = ['getCode', 'visit', 'reset'];
 	var __bind = function(exp, from, name){
 		exp[name] = function(){
 			return from[name].apply(from, arguments);
