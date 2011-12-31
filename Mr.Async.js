@@ -44,7 +44,7 @@
     }
 	
 	AsynIterator.prototype = {
-		'callback': function (arg0, arg1) {
+		callback : function (arg0, arg1) {
             var _this = this;
             return function (result) {
                 var type = typeof (arg0);
@@ -101,7 +101,7 @@
     }
 
 	AsynFor.prototype = {
-		'next': function () {
+		next : function () {
             var retVal = this._obj[this._idx++];
             if (retVal === undefined) {
                 throw 'retVal is undefined.';
@@ -111,17 +111,15 @@
 	};
 	
 	function Range(minAndMax) {
-        if (typeof (minAndMax) != 'string') {
+        if (typeof (minAndMax) != 'string')
             throw 'argument is not string.';
-        }
 
         var regex = /^([\(|\[])\s*(\d+)\s*\,\s*(\d+)\s*([\)|\]])$/;
         var _this = this;
 		var validFormat = false;
         minAndMax.replace(regex, function (itself, ls, min, max, rs) {
-            if (min == undefined || min == null || typeof (parseInt(min)) != 'number') {
+            if (min == undefined || min == null || typeof (parseInt(min)) != 'number')
                 throw 'min is undefined or null or is not a number';
-            }
 
             // why 
             // '0' > '27' : false ?
@@ -129,9 +127,8 @@
             // '2' > '27' : false ?
             // '3' > '27' : true ?!!!!
             // '10' > '27' : false ?
-            if (parseInt(min) > parseInt(max)) {
+            if (parseInt(min) > parseInt(max))
                 throw 'min is larger than max.';
-            }
 
             _this._ls = ls;
             _this._rs = rs;
@@ -150,7 +147,7 @@
     }
 	
 	Range.prototype = {
-		'next': function () {
+		next : function () {
             var retVal = this._min++;
             if (this._rs == ')' && retVal < this._max || this._rs == ']' && retVal <= this._max) {
                 return retVal;
@@ -162,7 +159,7 @@
 	
 	function Infinite() { this._count = 1; }
 	Infinite.prototype = {
-        'next': function () {
+        next : function () {
             return this._count++;
         }		
 	};	
@@ -272,7 +269,7 @@
 		
 		var completeCallback = function(){			
 			if(this.isResolved()){
-				done_dfds.push(this);	
+				done_dfds.push(this);
 			}else {
 				fail_dfds.push(this);
 			}

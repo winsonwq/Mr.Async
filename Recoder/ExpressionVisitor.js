@@ -170,7 +170,7 @@
 			return expression;
 		},
 		visitMethodCall : function(expression){
-			var anonymous = expression[1][0] == 'function';
+			var anonymous = expression[1][0] == 'function' || expression[1][0] == 'object';
 
 			if(anonymous) this._append('(');
 
@@ -412,7 +412,9 @@
 			this._append('}');
 
 			this.visitCatch(expression[2]);
-
+			if(expression[3] != null){
+				this.visitFinally(expression[3]);
+			}
 			return expression;
 		},
 		visitCatch : function(expression){
@@ -422,6 +424,12 @@
 
 			this.visitMultipleLine(expression[1]);
 
+			this._append('}');
+			return expression;
+		},
+		visitFinally : function(expression){
+			this._append('finally{');
+			this.visitMultipleLine(expression);
 			this._append('}');
 			return expression;
 		},

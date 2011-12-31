@@ -32,12 +32,12 @@
 
 	if(parser == null || recoder == null) throw 'UglifyJS or Mr.Recoder required.';
 
-
 	root.recode = function(func){
-		if(typeof func != 'function'){
+		if(typeof func != 'function')
 			throw 'argument is not a function.';
-		}
-		var codes = '(' + String(func) + ')();';
+		
+		var methodName = 'func$$' + new Date().getTime();
+		var codes = 'var ' + methodName + '=' + String(func) + ';' + methodName + '.apply(this, arguments);';
 		var expressions = parser.parse(codes);
 		recoder.reset();
 		recoder.visit(expressions);

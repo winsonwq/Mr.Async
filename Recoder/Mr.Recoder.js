@@ -54,14 +54,16 @@
 			return base(expression);
 		},
 		visitStatement : function(expression, base){
-			var key = expression[0];
-			switch(key){
-				case 'break':
-					this._append('return "____BREAK";');
-					return expression;
-				case 'continue':
-					this._append('return "____CONTINUE";');
-					return expression;
+			if(this._needToRecode(expression)){
+				var key = expression[0];
+				switch(key){
+					case 'break':
+						this._append('return "____BREAK";');
+						return expression;
+					case 'continue':
+						this._append('return "____CONTINUE";');
+						return expression;
+				}
 			}
 			return base(expression);
 		},
