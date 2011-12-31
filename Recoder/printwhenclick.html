@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../Mr.async.js"></script>
+		<script type="text/javascript" src="parser.js"></script>
+		<script type="text/javascript" src="ExpressionVisitor.js"></script>
+		<script type="text/javascript" src="Mr.Recoder.js"></script>
+		<script type="text/javascript">
+			function d(callback){
+				var de = Mr.Deferred();
+				setTimeout(function(){
+					var result = Math.random();
+					if(typeof callback == 'function'){
+						callback(result);
+					}
+					de.resolve(result);
+				}, 2000);
+				return de;
+			}
+
+			var source = 'var i = 0;while(i++ < 5){var random = Math.random() * 10;console.log("random number " + i + ": " + random);if(random > 5){console.log("waiting if.");$await(d());console.log("finish waiting if.");}else{console.log("waiting else");var aa = $await(d());console.log(aa);console.log("finish else");}console.log("waiting 2.");$await(d());console.log("finish waiting 2.");}';
+
+			var source2 = 'var i = 0;if(0){var i = 1;console.log(i);}else{var i = $await(d());console.log(i);}console.log(i);';
+			var source3 = 'var a = 0, b = $await(d()), c = 1, d = $await(d());console.log(b + d);';
+			var source4 = 'var i = 0;if(i == 0){ var i = $await(d());console.log(i);}';
+
+			var code = UglifyJS.parse(source);
+
+			window.onload = function(){
+				Mr.Recoder.visit(code);
+				console.log(Mr.Recoder.getCode());
+			};
+		</script>
+	</head>
+	<body style="height:1000px;">
+		<ul id="output">
+			
+		</ul>
+	</body>
+</html>
