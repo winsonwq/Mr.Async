@@ -90,11 +90,11 @@ test('normal statement : for loop', function(){
 	expect(1);
 	var code = Mr.Async.recode(function(){
 		var ret = 0;
-		for(var i = 0, len = 10; i < len ; i++){
+		for(var i = 0, len = 10; i <= len ; i++){
 			ret += i;
 		}
 
-		equal(ret, 9);
+		equal(ret, 55);
 	});
 
 	eval(code);
@@ -108,7 +108,7 @@ test('normal statement : while loop', function(){
 			ret += i;
 		}
 
-		equal(ret, 10);
+		equal(ret, 55);
 	});
 
 	eval(code);
@@ -122,7 +122,7 @@ test('normal statement : do-while loop', function(){
 			ret += i;
 		}while(i++ < 10);
 
-		equal(ret, 10);
+		equal(ret, 55);
 	});
 
 	eval(code);
@@ -179,4 +179,148 @@ test('normal statement : new', function(){
 	});
 
 	eval(code);
+});
+
+function delay(duration){
+	var de = Mr.Deferred();
+	setTimeout(function(){
+		de.resolve(1);
+	}, duration || 200);
+
+	return de;
+}
+
+test('normal $await', function(){
+	expect(2);
+	var code = Mr.Async.recode(function(){
+		ok(true, 'waiting for 1 second.');
+		$await(delay());
+		start();
+		ok(true, 'done.');
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : assignment', function(){
+	expect(3);
+	var code = Mr.Async.recode(function(){
+		ok(true, 'waiting for 1 second.');
+		var i = $await(delay());
+		start();
+		ok(true, 'done.');
+		equal(i, 1);
+	});
+	eval(code);
+	stop();
+});
+
+test('normal $await : array assignment ', function(){
+	expect(5);
+	var code = Mr.Async.recode(function(){
+		ok(true, 'waiting for 1 second.');
+		var arr = $await(delay(), delay());
+		start();
+		ok(true, 'done.');
+
+		equal(arr.length, 2);
+		equal(arr[0], 1);
+		equal(arr[1], 1);
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : if-else ', function(){
+	expect(3);
+	var code = Mr.Async.recode(function(){
+		var i = 0, ret;
+		if(i == 0){
+			ok(true, 'waiting for 1 second');
+			ret = $await(delay());
+			start();
+			ok(true, 'done.');
+		}else{
+			ret = -1;
+		}
+
+		equal(ret, 1);
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : if-else ', function(){
+	expect(3);
+	var code = Mr.Async.recode(function(){
+		var i = 1, ret;
+		if(i == 0){
+			ret = -1;
+		}else{
+			ok(true, 'waiting for 1 second in else');
+			ret = $await(delay());
+			start();
+			ok(true, 'done.');
+		}
+
+		equal(ret, 1);
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : for loop ', function(){
+	expect(7);
+	var code = Mr.Async.recode(function(){
+		var ret = 0;
+		for(var i = 1; i <= 3; i++){
+			ok(true, 'waiting for 1 second.');
+			var	a = $await(delay());
+			ok(true, 'done.');
+			ret += a;
+		}
+		start();
+		equal(ret, 3);
+	});
+	eval(code);
+	stop();
+});
+
+test('normal $await : while loop ', function(){
+	expect(7);
+	var code = Mr.Async.recode(function(){
+		var ret = 0, i = 0;
+		while(i++ < 3){
+			ok(true, 'waiting for 1 second.');
+			var	a = $await(delay());
+			ok(true, 'done.');
+			ret+= a;
+		}
+		start();
+		equal(ret, 3);
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : do-while loop ', function(){
+	expect(7);
+	var code = Mr.Async.recode(function(){
+		var ret = 0, i = 1;
+		do{
+			ok(true, 'waiting for 1 second.');
+			var	a = $await(delay());
+			ok(true, 'done.');
+			ret+= a;
+		}while(i++ < 3);
+		start();
+		equal(ret, 3);
+	});
+	eval(code);
+	stop();
 });

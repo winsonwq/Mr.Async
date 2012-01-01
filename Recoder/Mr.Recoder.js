@@ -129,12 +129,16 @@
 				var afterStatSameLevel = expression.slice(i + 1);
 				switch(K){
 					case 'var':
+						var methodCall = item[1][0][1];
+						if(methodCall[0] != 'call' || methodCall[1][1] != '$await'){
+							break;
+						}
 						item[item.length] = ['block', afterStatSameLevel];
 						this.visitVariable(item);
 						return true;
 					case 'stat':
 						var statName = item[1][0];
-						if(statName == 'assign' || (statName == 'call' && item[1][1][1] != null)){
+						if(statName == 'assign' || (statName == 'call' && item[1][1][1] == '$await')){
 							this._visitAwait(item[1], afterStatSameLevel);
 							return true;
 						}
@@ -197,12 +201,13 @@
 			return false;
 		},
 		_doWhileToFor : function(doExpression){
-			doExpression[0] = 'for';
-			doExpression[4] = doExpression[2];
-			doExpression[3] = null;
-			doExpression[2] = doExpression[1];
-			doExpression[1] = null;
-			return doExpression;
+			var forExp = [];
+			forExp[0] = 'for';
+			forExp[1] = null;
+			forExp[2] = doExpression[1];
+			forExp[3] = null;
+			forExp[4] = __cloneArr(doExpression[2]);
+			return forExp;
 		},
 		_visitAwait : function(expression, blockExpression){
 			var justMethodCall = expression[0] == 'call';
@@ -299,8 +304,23 @@
 			}
 
 			this._append('.start();');
-		}
+		},
+		
 	});
+
+	function __isArray(arr){
+		if(arr == null) return false;
+		return Object.prototype.toString.call(arr) === '[object Array]';
+	}
+
+	function __cloneArr(arr){
+		if(!__isArray(arr)) return arr;
+		var clone = [];
+		for(var i = 0, len = arr.length ; i < len ; i++){
+			clone[clone.length] = __cloneArr(arr[i]);
+		}
+		return clone;
+	}
 
 	var ext = ['getCode', 'visit', 'reset'];
 	var __bind = function(exp, from, name){

@@ -35,11 +35,11 @@
 	root.recode = function(func){
 		if(typeof func != 'function')
 			throw 'argument is not a function.';
-		
-		var methodName = 'func$$' + new Date().getTime();
-		var codes = 'var ' + methodName + '=' + String(func) + ';' + methodName + '.apply(this, arguments);';
-		var expressions = parser.parse(codes);
+
 		recoder.reset();
+
+		var codes = '(' + String(func) + ').apply(this);';
+		var expressions = parser.parse(codes);
 		recoder.visit(expressions);
 		return recoder.getCode();
 	}

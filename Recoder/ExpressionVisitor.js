@@ -163,7 +163,10 @@
 		},
 		visitMemberAccess : function(expression){
 			var exp = expression[1];
+			var anonymous = exp[0] == 'function' && exp[1] == null;
+			if(anonymous) this._append('(');
 			this.visit(exp);
+			if(anonymous) this._append(')');
 
 			this._append('.');
 			this._append(expression[2]);
@@ -188,7 +191,8 @@
 		},
 		visitAssignment : function(expression){
 			this.visit(expression[2]);
-			this._append('=');
+			var symbol = (expression[1] == true ? '' : expression[1]) + '=';
+			this._append(symbol);
 			this.visit(expression[3]);
 			return expression;
 		},
