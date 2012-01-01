@@ -273,7 +273,21 @@ test('normal $await : if-else ', function(){
 	stop();
 });
 
-test('normal $await : for loop ', function(){
+test('normal $await : for loop', function(){
+	expect(6);
+	var code = Mr.Async.recode(function(){
+		for(var i = 1; i <= 3; i++){
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done.');
+		}
+		start();
+	});
+	eval(code);
+	stop();
+});
+
+test('normal $await : for loop 2', function(){
 	expect(7);
 	var code = Mr.Async.recode(function(){
 		var ret = 0;
@@ -291,6 +305,22 @@ test('normal $await : for loop ', function(){
 });
 
 test('normal $await : while loop ', function(){
+	expect(6);
+	var code = Mr.Async.recode(function(){
+		var i = 0;
+		while(i++ < 3){
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done.');
+		}
+		start();
+	});
+
+	eval(code);
+	stop();
+});
+
+test('normal $await : while loop 2', function(){
 	expect(7);
 	var code = Mr.Async.recode(function(){
 		var ret = 0, i = 0;

@@ -115,6 +115,10 @@
 			}
 			return expression;
 		},
+		revisit : function(expression){
+			this.codes = [];
+			return this.visit(expression);
+		},
 		visitTopLevel : function(expression){
 			this.visitMultipleLine(expression);
 			this.onVisitEnd();

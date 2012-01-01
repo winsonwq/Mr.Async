@@ -322,7 +322,7 @@
 		return clone;
 	}
 
-	var ext = ['getCode', 'visit', 'reset'];
+	var ext = ['getCode', 'visit', 'reset', 'revisit'];
 	var __bind = function(exp, from, name){
 		exp[name] = function(){
 			return from[name].apply(from, arguments);
