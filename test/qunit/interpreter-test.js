@@ -404,7 +404,6 @@ test('$await : while loop 2', function(){
 		start();
 		equal(ret, 3);
 	});
-
 	eval(code);
 	stop();
 });
