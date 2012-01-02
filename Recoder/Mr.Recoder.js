@@ -96,15 +96,16 @@
 			if(lastOne != null && lastOne[0] == 'block'){
 				blocks = lastOne[1];
 			}
-			
+
 			if(awaits.length > 1){
-				var tempBlock = [];
+				var tempBlock = [['var', []]];
 				for(var i = 1, len = awaits.length ; i < len; i++){
-					tempBlock.push(["var", [awaits[i]]]);
+					tempBlock[0][1].push(awaits[i]);
 					if((i == len - 1) && blocks != null){
 						tempBlock = tempBlock.concat(blocks);
 					}
 				}
+
 				this._visitAwait(awaits[0], tempBlock);
 			}else if(awaits.length == 1){
 				this._visitAwait(awaits[0], blocks);
@@ -127,76 +128,87 @@
 			var K = item[0];
 			if(this._needToRecode(item)){
 				var afterStatSameLevel = expression.slice(i + 1);
-				switch(K){
-					case 'var':
-						var methodCall = item[1][0][1];
-						if(methodCall[0] != 'call' || methodCall[1][1] != '$await'){
-							break;
-						}
-						item[item.length] = ['block', afterStatSameLevel];
-						this.visitVariable(item);
-						return true;
-					case 'stat':
-						var statName = item[1][0];
-						if(statName == 'assign' || (statName == 'call' && item[1][1][1] == '$await')){
-							this._visitAwait(item[1], afterStatSameLevel);
+				// generate new function after
+				var funcName = '__f$' + new Date().getTime();
+				var newFunc = __newDefFunction(funcName, [], afterStatSameLevel);
+				var callFunc = __callFunction(funcName, []);
+
+				if(item[item.length - 1] != '$true'){
+					switch(K){
+						case 'var':
+							var methodCall = item[1][0][1];
+							if(methodCall[0] != 'call' || methodCall[1][1] != '$await'){
+								break;
+							}
+
+							item[item.length] = ['block', afterStatSameLevel];
+							this.visitVariable(item);
 							return true;
-						}
-						break;
-					case 'for':
-						var executeExpression;
-						var before = item[1];
+						case 'stat':
+							var statName = item[1][0];
+							if(statName == 'assign' || (statName == 'call' && item[1][1][1] == '$await')){
+								this._visitAwait(item[1], afterStatSameLevel);
+								return true;
+							}
+							break;
+						case 'for':
+							var executeExpression, awaits, normals;
+							var before = item[1];
 
-						if(this._needToRecode(before)){
-							item[1] = null;
-							executeExpression = [before].concat([item]).concat(afterStatSameLevel);
-						}
+							if(this._needToRecode(before)){
+								if(before[0] == 'seq'){
+									break;
+								}
 
-						if(this._needToRecode(item)){
+								var vars = __analyseVariable(before);
+								
+								awaits = vars.awaits;
+								normals = vars.normals;
+
+								item[1] = normals;
+								executeExpression = [awaits].concat([item]).concat(afterStatSameLevel);
+							}
+
+							if(this._needToRecode(item)){
+								item[item.length] = ['block', afterStatSameLevel];
+								expression.splice(i + 1);
+							}
+
+							if(executeExpression){
+								this.visitMultipleLine(executeExpression);
+								return true;
+							}
+							break;
+						case 'do':
+							var before = item[2];
+							item = this._doWhileToFor(item);
 							item[item.length] = ['block', afterStatSameLevel];
 							expression.splice(i + 1);
-						}
-						
-						if(executeExpression){
-							this.visitMultipleLine(executeExpression);
+							this.visitMultipleLine(before[1].concat([item]));
 							return true;
-						}
-						break;
-					case 'do':
-						var before = item[2];
-						item = this._doWhileToFor(item);
-						item[item.length] = ['block', afterStatSameLevel];
-						expression.splice(i + 1);
-						this.visitMultipleLine(before[1].concat([item]));
-						return true;
-					case 'while':
-						item[item.length] = ['block', afterStatSameLevel];
-						expression.splice(i + 1);
-						this.visitWhileLoop(item);
-						return true;
-					case 'if':
-						if(item[item.length - 1] == '$$true') break;
-						var elseBlock = item[3] == null ? ['block', []] : item[3];
-						item[3] = elseBlock;
+						case 'while':
+							item[item.length] = ['block', afterStatSameLevel];
+							expression.splice(i + 1);
+							this.visitWhileLoop(item);
+							return true;
+						case 'if':
+							var elseBlock = item[3] == null ? ['block', []] : item[3];
+							item[3] = elseBlock;
 
-						var funcName = 'ifElse$$' + new Date().getTime();
+							// add method call in if and else block;
+							item[2][1].push(callFunc);
+							item[3][1].push(callFunc);
 
-						var newFunction = ['defun', funcName, [], afterStatSameLevel];
-						var callFunc = ['stat', ['call', ['name', funcName], []]];
+							expression.splice(i + 1);
+							expression.push(newFunc);
+							
+							// if-else is ok
+							item[item.length] = '$true';
 
-						// add method call in if and else block;
-						item[2][1].push(callFunc);
-						item[3][1].push(callFunc);
-
-						expression.splice(i + 1);
-						expression.push(newFunction);
-						
-						// if-else is ok
-						item[item.length] = '$$true';
-
-						this.visitMultipleLine([item].concat([newFunction]));
-						return true;
-				}	
+							this.visitMultipleLine([item].concat([newFunc]));
+							return true;
+					}	
+				}
 			}
 			return false;
 		},
@@ -227,7 +239,6 @@
 				}
 			}
 			this._append(').done(function(');
-
 			if(!justMethodCall){
 				if(!assignStatement && parameters.length == 1){
 					this._append(variableName);
@@ -246,7 +257,7 @@
 				}							
 			}else this._append('){');
 
-			if(blockExpression){
+			if(blockExpression != null){
 				this.visitMultipleLine(blockExpression);
 			}
 
@@ -273,6 +284,7 @@
 				this.visit(outerBefore);
 			}
 
+			this._append('var _$$scope = this;');
 			this._append('Mr.asynIterator(Mr.infinite(), function(cnt){');
 			this._append('var _ = this;');
 			
@@ -304,8 +316,7 @@
 			}
 
 			this._append('.start();');
-		},
-		
+		}		
 	});
 
 	function __isArray(arr){
@@ -320,6 +331,31 @@
 			clone[clone.length] = __cloneArr(arr[i]);
 		}
 		return clone;
+	}
+
+	function __analyseVariable(varStat){
+		var awaits = [];
+		var normal = [];
+		var vars = varStat[1];
+
+		for(var i = 0, len = vars.length ; i < len ; i++){
+			var item = vars[i];
+			if(item.length > 1 && item[1][0] == 'call' && item[1][1][1] == '$await'){
+				awaits.push(item);
+				normal.push([item[0], ['name', item[0]]]);
+			}else{
+				normal.push(item);
+			}
+		}
+		return { awaits : ['var', awaits], normals : ['var', normal] };		
+	}
+
+	function __newDefFunction(defName, parameters, statement){
+		return ['defun', defName, parameters, statement];
+	}
+
+	function __callFunction(funcName, parameters){
+		return ['stat', ['call', ['name', funcName], parameters]];
 	}
 
 	var ext = ['getCode', 'visit', 'reset', 'revisit'];

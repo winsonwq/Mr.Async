@@ -109,6 +109,9 @@
 				case 'throw':
 					this.visitThrow(expression);
 					break;
+				case 'seq' : 
+					this.visitSeq(expression);
+					break;
 				default :
 					throw K + ' error';
 					break;
@@ -223,6 +226,15 @@
 			this.onLineEnd();
 			return expression;
 		},
+		visitSeq : function(expression){
+			for(var i = 1, len = expression.length ; i < len ; i++){
+				this.visit(expression[i]);
+				if(i != len - 1){
+					this._append(',');
+				}
+			}
+			return expression;
+		},
 		visitVariableAssignment : function(expression){
 			this._append(expression[0]);
 			if(expression[1] != null){
@@ -274,7 +286,7 @@
 		visitForLoop : function(expression){
 			this._append('for(');
 			var before = this.visit(expression[1]);
-			if(before == null){
+			if(before == null || before[0] == 'seq'){
 				this._append(';');
 			}
 			var conditional = this.visitConditional(expression[2]);
@@ -325,7 +337,8 @@
 			return expression;
 		},
 		visitBlock : function(expression){
-			this.visitMultipleLine(expression[1]);
+			if(expression[1] != null)
+				this.visitMultipleLine(expression[1]);
 			return expression;
 		},
 		visitMultipleLine : function(expression){

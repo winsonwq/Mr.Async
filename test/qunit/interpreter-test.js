@@ -13,7 +13,7 @@ test('Object Exist', function(){
 	ok(Mr.Async.recode, 'Mr.Async.recode function');
 });
 
-test('normal statement', function(){
+test('normal statement : assignment ', function(){
 	expect(5);
 	var code = Mr.Async.recode(function(){
 		var a = 0, b = "1", c = { a : 1 }, d = [1,2,3], e = function(){};
@@ -24,6 +24,20 @@ test('normal statement', function(){
 		equal(typeof e, 'function');
 	});
 
+	eval(code);
+});
+
+test('normal statement : assignment 2', function(){
+	expect(5);
+	var code = Mr.Async.recode(function(){
+		var a, b, c, d, e;
+		a = 0, b = "1", c = { a : 1 }, d = [1,2,3], e = function(){};
+		equal(a, 0);
+		equal(b, "1");
+		equal(c.a, 1);
+		equal(d.length, 3);
+		equal(typeof e, 'function');
+	});
 	eval(code);
 });
 
@@ -91,6 +105,20 @@ test('normal statement : for loop', function(){
 	var code = Mr.Async.recode(function(){
 		var ret = 0;
 		for(var i = 0, len = 10; i <= len ; i++){
+			ret += i;
+		}
+
+		equal(ret, 55);
+	});
+
+	eval(code);
+});
+
+test('normal statement : for loop 2', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		var ret = 0, i, len;
+		for(i = 0, len = 10; i <= len ; i++){
 			ret += i;
 		}
 
@@ -190,7 +218,7 @@ function delay(duration){
 	return de;
 }
 
-test('normal $await', function(){
+test('$await', function(){
 	expect(2);
 	var code = Mr.Async.recode(function(){
 		ok(true, 'waiting for 1 second.');
@@ -203,7 +231,7 @@ test('normal $await', function(){
 	stop();
 });
 
-test('normal $await : assignment', function(){
+test('$await : assignment', function(){
 	expect(3);
 	var code = Mr.Async.recode(function(){
 		ok(true, 'waiting for 1 second.');
@@ -212,11 +240,12 @@ test('normal $await : assignment', function(){
 		ok(true, 'done.');
 		equal(i, 1);
 	});
+
 	eval(code);
 	stop();
 });
 
-test('normal $await : array assignment ', function(){
+test('$await : array assignment ', function(){
 	expect(5);
 	var code = Mr.Async.recode(function(){
 		ok(true, 'waiting for 1 second.');
@@ -233,7 +262,39 @@ test('normal $await : array assignment ', function(){
 	stop();
 });
 
-test('normal $await : if-else ', function(){
+test('$await : multiple assignment', function(){
+	expect(4);
+	var code = Mr.Async.recode(function(){
+		var a = $await(delay()), b = $await(delay()), c = 1, d = $await(delay());
+		equal(a, 1);
+		equal(b, 1);
+		equal(c, 1);
+		equal(d, 1);
+		start();
+	});
+	eval(code);
+	stop();
+});
+
+test('$await : multiple assignment 2', function(){
+	expect(4);
+	var code = Mr.Async.recode(function(){
+		var a, b, c, d;
+		a = $await(delay());
+		b = $await(delay());
+		c = 1;
+		d = $await(delay());
+		equal(a, 1);
+		equal(b, 1);
+		equal(c, 1);
+		equal(d, 1);
+		start();
+	});
+	eval(code);
+	stop();
+});
+
+test('$await : if-else ', function(){
 	expect(3);
 	var code = Mr.Async.recode(function(){
 		var i = 0, ret;
@@ -245,7 +306,6 @@ test('normal $await : if-else ', function(){
 		}else{
 			ret = -1;
 		}
-
 		equal(ret, 1);
 	});
 
@@ -253,7 +313,7 @@ test('normal $await : if-else ', function(){
 	stop();
 });
 
-test('normal $await : if-else ', function(){
+test('$await : if-else 2', function(){
 	expect(3);
 	var code = Mr.Async.recode(function(){
 		var i = 1, ret;
@@ -273,7 +333,7 @@ test('normal $await : if-else ', function(){
 	stop();
 });
 
-test('normal $await : for loop', function(){
+test('$await : for loop', function(){
 	expect(6);
 	var code = Mr.Async.recode(function(){
 		for(var i = 1; i <= 3; i++){
@@ -287,7 +347,7 @@ test('normal $await : for loop', function(){
 	stop();
 });
 
-test('normal $await : for loop 2', function(){
+test('$await : for loop 2', function(){
 	expect(7);
 	var code = Mr.Async.recode(function(){
 		var ret = 0;
@@ -304,7 +364,18 @@ test('normal $await : for loop 2', function(){
 	stop();
 });
 
-test('normal $await : while loop ', function(){
+test('$await : in for loop before statement ', function(){
+	var code = Mr.Async.recode(function(){
+		for(var i = $await(delay()), len = 3; i < len ; i++);
+		equal(i, 3);
+		start();
+	});
+
+	eval(code);
+	stop();
+});
+
+test('$await : while loop ', function(){
 	expect(6);
 	var code = Mr.Async.recode(function(){
 		var i = 0;
@@ -320,7 +391,7 @@ test('normal $await : while loop ', function(){
 	stop();
 });
 
-test('normal $await : while loop 2', function(){
+test('$await : while loop 2', function(){
 	expect(7);
 	var code = Mr.Async.recode(function(){
 		var ret = 0, i = 0;
@@ -330,6 +401,7 @@ test('normal $await : while loop 2', function(){
 			ok(true, 'done.');
 			ret+= a;
 		}
+
 		start();
 		equal(ret, 3);
 	});
@@ -338,7 +410,7 @@ test('normal $await : while loop 2', function(){
 	stop();
 });
 
-test('normal $await : do-while loop ', function(){
+test('$await : do-while loop ', function(){
 	expect(7);
 	var code = Mr.Async.recode(function(){
 		var ret = 0, i = 1;
@@ -354,3 +426,143 @@ test('normal $await : do-while loop ', function(){
 	eval(code);
 	stop();
 });
+
+test('$await : do-while loop 2', function(){
+	expect(7);
+	var code = Mr.Async.recode(function(){
+		var ret = 0, i = 1;
+		do{
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done.');
+			ret+= 1;
+		}while(i++ < 3);
+		start();
+		equal(ret, 3);
+	});
+	eval(code);
+	stop();
+});
+
+test('$await : switch', function(){
+	expect(6)
+	var code = Mr.Async.recode(function(){
+		var i = 0;
+		switch(i){
+			case 0 :
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done.');
+				i = 1;
+			case 1 :
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done');
+			default : 
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done');
+				break;
+		}
+		start();
+	});
+
+	//eval(code);
+	//stop();
+});
+
+test('$await : try-catch-finally', function(){
+	expect(6)
+	var code = Mr.Async.recode(function(){
+		try{
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+			({})();
+		}catch(ex){
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+		}finally{
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+		}
+		start();
+	});
+
+	//eval(code);
+	//stop();
+});
+
+test('$await : property assignment not supported.', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		var a = {};
+		a.i = $await(delay());
+		equal(a.i, 1);
+		start();
+	});
+
+	//eval(code);
+	//stop();
+});
+
+test('$await : if-else scope', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		var i = 0;
+		if(i == 1){
+			var i = $await(delay());
+			i += 1;
+		}else{
+			var i = $await(delay());
+			i += 2;
+		}
+		equal(i, 0);
+		start();
+	});
+
+	eval(code);
+	stop();
+});
+
+test('$await : function', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		function d(){
+			var de = Mr.Deferred();
+			setTimeout(function(){
+				de.resolve();
+			}, 1000);
+			return de;
+		}
+
+		var i = 0;
+		if(i == 1){
+			var i = $await(d());
+			i = 1
+		}else{
+			var i = $await(d());
+			i = 2;
+		}
+		equal(i, 0);
+		start();
+	});
+
+	eval(code);
+	stop();
+});
+
+test('$await : this', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		
+	});
+
+	eval(code);
+	stop();
+});
+
+
+
