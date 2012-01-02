@@ -231,6 +231,8 @@
 				throw 'no parameter in $await method.';
 			}
 
+			var scope = '_$cope';
+			this._append('var ' + scope + ' = this;');
 			this._append('Mr.when(');
 			for(var i = 0, len = parameters.length; i < len ; i++){
 				this.visit(parameters[i]);
@@ -239,6 +241,7 @@
 				}
 			}
 			this._append(').done(function(');
+
 			if(!justMethodCall){
 				if(!assignStatement && parameters.length == 1){
 					this._append(variableName);
@@ -257,8 +260,11 @@
 				}							
 			}else this._append('){');
 
+			var paramStr = variableName || '';
 			if(blockExpression != null){
+				this._append('(function(' + paramStr + '){');
 				this.visitMultipleLine(blockExpression);
+				this._append('}).call(' + scope + ( paramStr == '' ? '' : ', ') + paramStr + ');');
 			}
 
 			this._append('});');
@@ -284,7 +290,6 @@
 				this.visit(outerBefore);
 			}
 
-			this._append('var _$$scope = this;');
 			this._append('Mr.asynIterator(Mr.infinite(), function(cnt){');
 			this._append('var _ = this;');
 			

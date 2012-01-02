@@ -370,7 +370,6 @@ test('$await : in for loop before statement ', function(){
 		equal(i, 3);
 		start();
 	});
-
 	eval(code);
 	stop();
 });
@@ -556,10 +555,39 @@ test('$await : function', function(){
 
 test('$await : this', function(){
 	expect(1);
+	this.i = 1;
 	var code = Mr.Async.recode(function(){
-		
+		equal(this.i, 1);
 	});
 
+	eval(code);
+});
+
+test('$await : this 2', function(){
+	expect(2);
+	this.i = 1;
+	var code = Mr.Async.recode(function(){
+		var i = $await(delay());
+		equal(i, 1);
+		equal(this.i, 1);
+		start();
+	});
+	eval(code);
+	stop();
+});
+
+test('$await : this 3', function(){
+	expect(4);
+	this.a = 2;
+	this.b = 3;
+	var code = Mr.Async.recode(function(){
+		var a = $await(delay()), b = $await(delay());
+		equal(a, 1);
+		equal(this.a, 2);
+		equal(b, 1);
+		equal(this.b, 3);
+		start();
+	});
 	eval(code);
 	stop();
 });
