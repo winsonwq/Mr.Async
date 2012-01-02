@@ -171,7 +171,7 @@
 
 							if(this._needToRecode(item)){
 								item[item.length] = ['block', afterStatSameLevel];
-								expression.splice(i + 1);
+								expression.splice(i + 1, expression.length - i - 1);
 							}
 
 							if(executeExpression){
@@ -183,12 +183,12 @@
 							var before = item[2];
 							item = this._doWhileToFor(item);
 							item[item.length] = ['block', afterStatSameLevel];
-							expression.splice(i + 1);
+							expression.splice(i + 1, expression.length - i - 1);
 							this.visitMultipleLine(before[1].concat([item]));
 							return true;
 						case 'while':
 							item[item.length] = ['block', afterStatSameLevel];
-							expression.splice(i + 1);
+							expression.splice(i + 1, expression.length - i - 1);
 							this.visitWhileLoop(item);
 							return true;
 						case 'if':
@@ -199,7 +199,7 @@
 							item[2][1].push(callFunc);
 							item[3][1].push(callFunc);
 
-							expression.splice(i + 1);
+							expression.splice(i + 1, expression.length - i - 1);
 							expression.push(newFunc);
 							
 							// if-else is ok

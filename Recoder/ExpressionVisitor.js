@@ -489,18 +489,18 @@
 		function ctor(){};
 		ctor.prototype = parent.prototype;
 		//
-		child.prototype = new ctor;
-		child.super = parent.prototype;
+		child.prototype = new ctor();
+		child.__super = parent.prototype;
 	}
 
 	var __bind = function(child, ext, key){
 		// if super have this method, inherit;
-		if(child.super[key] != null){
+		if(child.__super[key] != null){
 			child.prototype[key] = function(){
 				var args = [].slice.call(arguments);
 				var _ = this;
 				args.push(function(){
-					child.super[key].apply(_, arguments);
+					child.__super[key].apply(_, arguments);
 				});
 				ext[key].apply(this, args);
 			};

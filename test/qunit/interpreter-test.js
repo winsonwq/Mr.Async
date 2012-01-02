@@ -343,8 +343,10 @@ test('$await : for loop', function(){
 		}
 		start();
 	});
+
 	eval(code);
 	stop();
+
 });
 
 test('$await : for loop 2', function(){
@@ -360,6 +362,7 @@ test('$await : for loop 2', function(){
 		start();
 		equal(ret, 3);
 	});
+
 	eval(code);
 	stop();
 });
@@ -591,5 +594,8 @@ test('$await : this 3', function(){
 	stop();
 });
 
-
-
+test('aaa', function(){
+	var source = [1,2,3];
+	var arr = source.splice(2, source.length - 2);
+	equal(source.length, 2);
+});
