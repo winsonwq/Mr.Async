@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../Mr.Async.js"></script>
+		<script type="text/javascript" src="../../Recoder/ExpressionVisitor.js"></script>
+		<script type="text/javascript" src="../../Recoder/parser.js"></script>
+		<script type="text/javascript" src="../../Recoder/Mr.Recoder.js"></script>
+		<script type="text/javascript" src="../../Mr.Async.Interpreter.js"></script>
+		<script type="text/javascript">
+			window.onload = function(){
+				var arr = [7, 9, 8, 3, 10, 15, 14, 12, 24, 21, 22, 20, 29, 25, 8, 4, 6, 3, 11, 5, 2, 22, 16, 19, 33, 28, 30];
+				var log = document.getElementById('log');
+				function bubbleSort(arr){
+					for(var i = 0 ; i < arr.length - 1 ; i++){
+						for(var ii = i + 1; ii < arr.length ; ii++){
+							if(arr[i] > arr[ii]){
+								normalSwap(arr, i, ii);
+							}
+						}
+					}
+				}
+
+				function normalSwap(arr, i, ii){	
+					var temp = arr[i];
+					arr[i] = arr[ii];
+					arr[ii] = temp;
+					// swap;
+				}
+
+				function asyncSwap(arr, i, ii, callback){
+					var de = Mr.Deferred();
+					setTimeout(function(){
+						var temp = arr[i];
+						arr[i] = arr[ii];
+						arr[ii] = temp;
+						if(typeof(callback) == 'function'){
+							callback();
+						}
+						de.resolve();
+					}, 50);
+					return de;
+				}
+				
+				function asynBubbleSort(arr){
+					eval(Mr.Async.recode(function(){
+						for(var i = 0 ; i < arr.length - 1 ; i++){
+							for(var ii = i + 1; ii < arr.length ; ii++){
+								if(arr[i] > arr[ii]){
+									$await(asyncSwap(arr, i, ii));
+								}
+							}
+						}
+						console.log(arr);
+					}));
+				}
+
+				asynBubbleSort(arr);
+			}
+		</script>
+	</head>
+	<body>
+		<div id="log"></div>
+	</body>
+</html>

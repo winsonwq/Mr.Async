@@ -593,9 +593,3 @@ test('$await : this 3', function(){
 	eval(code);
 	stop();
 });
-
-test('aaa', function(){
-	var source = [1,2,3];
-	var arr = source.splice(2, source.length - 2);
-	equal(source.length, 2);
-});
