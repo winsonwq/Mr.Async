@@ -492,7 +492,7 @@ test('$await : try-catch-finally', function(){
 		start();
 	});
 	eval(code);
-	stop();
+	stop(); 
 });
 
 test('$await : property assignment not supported.', function(){
