@@ -207,6 +207,9 @@
 
 							this.visitMultipleLine([item].concat([newFunc]));
 							return true;
+						case 'try':
+							console.log(item);
+							break;
 					}	
 				}
 			}
