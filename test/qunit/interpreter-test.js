@@ -476,10 +476,13 @@ test('$await : try-catch-finally', function(){
 	expect(6);
 	var code = Mr.Async.recode(function(){
 		try{
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
 			({})();
 			ok(true, 'waiting for 1 second.');
 			$await(delay());
-			ok(true, 'done');			
+			ok(true, 'done');		
 		}catch(ex){
 			ok(true, 'waiting for 1 second.');
 			$await(delay());
@@ -491,8 +494,9 @@ test('$await : try-catch-finally', function(){
 		}
 		start();
 	});
-	eval(code);
-	stop(); 
+	console.log(code);
+	//eval(code);
+	//stop(); 
 });
 
 test('$await : property assignment not supported.', function(){
