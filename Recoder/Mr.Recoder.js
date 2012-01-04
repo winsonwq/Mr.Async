@@ -208,7 +208,32 @@
 							this.visitMultipleLine([item].concat([newFunc]));
 							return true;
 						case 'try':
-							console.log(item);
+							var tryBlock = item[1];
+							var catchBlock = item[2];
+							var finalBlock = item[3] == null ? [] : item[3];
+
+							// get catch function
+							var catchName = '__f$catch' + new Date().getTime();
+							var catchFunc = __newDefFunction(catchName, [], catchBlock[1]);
+							var callCatchFunc = __callFunction(catchName, []);
+
+							// get finally function
+							var finalName = '__f$final' + new Date().getTime();
+							var finalFunc = __newDefFunction(finalName, [], finalBlock);
+							var callFinalFunc = __callFunction(finalName, []);
+								
+							// add after-try-statement call in try-catch block
+							finalFunc[3].push(callFunc);						
+							tryBlock.push(callFinalFunc);
+							catchFunc[3].push(callFinalFunc);
+
+							catchBlock[1] = [callCatchFunc];
+							item[3] = null;
+
+							expression.splice(i + 1, expression.length - i - 1);
+							expression.push(catchFunc);
+							expression.push(finalFunc);
+							expression.push(newFunc);
 							break;
 					}	
 				}
