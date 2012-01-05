@@ -235,6 +235,40 @@
 							expression.push(finalFunc);
 							expression.push(newFunc);
 							break;
+						case 'switch': 
+							var cases = item[2];
+							var funcMap = {};
+							var callFuncMap = {};
+							var notBreakFuncs = [];
+
+							expression.splice(i + 1, expression.length - i - 1);
+							for(var i = 0, len = cases.length; i < len ; i++){
+								var item = cases[i];
+								var name = item[0] != null ? item[0][1] : 'default';
+
+								var caseFuncName = '__f$case' + name + new Date().getTime();
+								var funcStatments = __analyseCase(item[1]);
+								var caseFunc = __newDefFunction(caseFuncName, [], funcStatments);
+								var callCaseFunc = __callFunction(caseFuncName, []);
+
+								// let every case contais break;
+								item[1] = [callCaseFunc, ['break', null]];
+								funcMap[name] = caseFunc;
+								callFuncMap[name] = callCaseFunc;
+								expression.push(caseFunc);
+
+								for(var ii = 0, len2 = notBreakFuncs.length ; ii < len2 ; ii++){
+									notBreakCases[i][3].push(callCaseFunc);
+								}
+
+								var containsBreak = this._containsKeyword(item[1], 'break');
+								if(!containsBreak){
+									
+								}
+							}
+
+							expression.push(newFunc);
+							break;
 					}	
 				}
 			}
@@ -300,13 +334,16 @@
 			return expression;
 		},
 		_needToRecode : function(expression){
+			return this._containsKeyword(expression, '$await');
+		},
+		_containsKeyword : function(expression, keyword){
 			if(Object.prototype.toString.call(expression) != '[object Array]') return 0;
-
+			
 			var cnt = 0;
 			for(var i = 0, len = expression.length ; i < len ; i++){
-				if(expression[i] == '$await')
+				if(expression[i] == keyword)
 					cnt++;
-				cnt += this._needToRecode(expression[i]);
+				cnt += this._needToRecode(expression[i], keyword);
 			}
 			return cnt;
 		},
@@ -381,6 +418,18 @@
 			}
 		}
 		return { awaits : ['var', awaits], normals : ['var', normal] };		
+	}
+
+	function __analyseCase(itemStatements){
+		var statements = [];
+		for(var i = 0, len = itemStatements.length ; i < len ; i++){
+			var item = itemStatements[i];
+			if(item[0] == 'break')
+				break;
+			else if(item[0] == 'stat')
+				statements.push(item);
+		}
+		return statements;
 	}
 
 	function __newDefFunction(defName, parameters, statement){

@@ -1,5 +1,9 @@
 module('Mr.Async.Interpreter');
 
+test('aaa', function(){
+	(function(){var i=0;switch(i){case 0:__f$case01325738820955();break;case 1:__f$case11325738820955();break;default:__f$casedefault1325738820955();break;}function __f$case01325738820955(){ok(true,"waiting for 1 second.");var _$cope = this;Mr.when(delay()).done(function(){(function(){ok(true,"done.");i=1;}).call(_$cope);});}function __f$case11325738820955(){ok(true,"waiting for 1 second.");var _$cope = this;Mr.when(delay()).done(function(){(function(){ok(true,"done");}).call(_$cope);});}function __f$casedefault1325738820955(){ok(true,"waiting for 1 second.");var _$cope = this;Mr.when(delay()).done(function(){(function(){ok(true,"done");}).call(_$cope);});}function __f$1325738820955(){start();}}).apply(this);
+})
+
 test('Object Exist', function(){
 	ok(UglifyJS, 'parser exists.');
 	ok(UglifyJS.parse, 'UglifyJS.parse exists.');
@@ -445,7 +449,7 @@ test('$await : do-while loop 2', function(){
 	stop();
 });
 
-test('$await : switch', function(){
+test('$await : 1111', function(){
 	expect(6)
 	var code = Mr.Async.recode(function(){
 		var i = 0;
@@ -467,18 +471,41 @@ test('$await : switch', function(){
 		}
 		start();
 	});
-
-	//eval(code);
-	//stop();
 });
 
-test('$await : try-catch-finally', function(){
+test('$await : switch 2', function(){
 	expect(6);
 	var code = Mr.Async.recode(function(){
+		var i = 0;
+		switch(i){
+			case 0 :
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done.');
+				i = 1;
+			case 1 :
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done');
+			default : 
+				ok(true, 'waiting for 1 second.');
+				$await(delay());
+				ok(true, 'done');
+				break;
+		}
+		start();
+	});
+
+
+console.log(code);
+	eval(code);
+	stop();
+});
+
+test('$await : statment before async in try-catch-finally', function(){
+	expect(4);
+	var code = Mr.Async.recode(function(){
 		try{
-			ok(true, 'waiting for 1 second.');
-			$await(delay());
-			ok(true, 'done');
 			({})();
 			ok(true, 'waiting for 1 second.');
 			$await(delay());
@@ -494,7 +521,29 @@ test('$await : try-catch-finally', function(){
 		}
 		start();
 	});
-	console.log(code);
+	eval(code);
+	stop(); 
+});
+
+test('$await : statment in async in try-catch-finally', function(){
+	expect(6);
+	var code = Mr.Async.recode(function(){
+		try{			
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+			({})();	
+		}catch(ex){
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+		}finally{
+			ok(true, 'waiting for 1 second.');
+			$await(delay());
+			ok(true, 'done');
+		}
+		start();
+	});
 	//eval(code);
 	//stop(); 
 });
