@@ -237,38 +237,40 @@
 							break;
 						case 'switch': 
 							var cases = item[2];
-							var funcMap = {};
-							var callFuncMap = {};
-							var notBreakFuncs = [];
-
+							var lastNotBreakFunc = null;
+							
 							expression.splice(i + 1, expression.length - i - 1);
 							for(var i = 0, len = cases.length; i < len ; i++){
 								var item = cases[i];
 								var name = item[0] != null ? item[0][1] : 'default';
-
+								
 								var caseFuncName = '__f$case' + name + new Date().getTime();
 								var funcStatments = __analyseCase(item[1]);
 								var caseFunc = __newDefFunction(caseFuncName, [], funcStatments);
 								var callCaseFunc = __callFunction(caseFuncName, []);
+								
+								var containsBreak = this._containsKeyword(item[1], 'break');
 
 								// let every case contais break;
 								item[1] = [callCaseFunc, ['break', null]];
-								funcMap[name] = caseFunc;
-								callFuncMap[name] = callCaseFunc;
 								expression.push(caseFunc);
 
-								for(var ii = 0, len2 = notBreakFuncs.length ; ii < len2 ; ii++){
-									notBreakCases[i][3].push(callCaseFunc);
+								if(lastNotBreakFunc != null){
+									lastNotBreakFunc[3].push(callCaseFunc);
+								}
+								if(!containsBreak){
+									lastNotBreakFunc = caseFunc;
+								}else{
+									lastNotBreakFunc = null;
+									caseFunc[3].push(callFunc);
 								}
 
-								var containsBreak = this._containsKeyword(item[1], 'break');
-								if(!containsBreak){
-									
+								if(i == len - 1 && !containsBreak){
+									caseFunc[3].push(callFunc);
 								}
 							}
 
 							expression.push(newFunc);
-							break;
 					}	
 				}
 			}
@@ -338,12 +340,12 @@
 		},
 		_containsKeyword : function(expression, keyword){
 			if(Object.prototype.toString.call(expression) != '[object Array]') return 0;
-			
 			var cnt = 0;
 			for(var i = 0, len = expression.length ; i < len ; i++){
-				if(expression[i] == keyword)
+				if(expression[i] == keyword){
 					cnt++;
-				cnt += this._needToRecode(expression[i], keyword);
+				}
+				else cnt += this._containsKeyword(expression[i], keyword);
 			}
 			return cnt;
 		},
