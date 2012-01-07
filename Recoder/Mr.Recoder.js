@@ -68,7 +68,7 @@
 			return base(expression);
 		},
 		visitVariable : function(expression, base){
-			
+
 			var normal = [];
 			var awaits = [];
 
@@ -285,10 +285,22 @@
 			forExp[4] = __cloneArr(doExpression[2]);
 			return forExp;
 		},
-		_visitAwait : function(expression, blockExpression){
+		_visitAwait : function(expression, blockExpression){				
 			var justMethodCall = expression[0] == 'call';
 			var assignStatement = justMethodCall | expression[0] == 'assign';
-			var variableName = justMethodCall ? null : assignStatement ? expression[2][1] : expression[0];
+			var assignProperty = assignStatement && expression[2][0] == 'dot';
+			var propertyExp = assignProperty ? expression[2] : null;
+
+			var variableName;
+			if(!justMethodCall){
+				if(assignStatement){
+					var l = expression[2].length;
+					variableName = expression[2][l - 1];
+				}else{
+					variableName = expression[0];
+				}
+			}
+
 			var parameters = justMethodCall ? expression[2] : assignStatement ? expression[3][2] : expression[1][2];
 			
 			if(parameters.length == 0){
@@ -315,16 +327,25 @@
 					if(!assignStatement){
 						this._append('var ');
 					}
-					this._append(variableName + '=');
+					if(assignProperty){
+						this.visit(propertyExp);	
+					}else{
+						this._append(variableName);
+					}
+					this._append('=');
 					if(parameters.length == 1){
 						this._append('arguments[0];');
 					}else{
 						this._append('[].slice.call(arguments);');
-					}	
+					}
 				}							
 			}else this._append('){');
 
-			var paramStr = variableName || '';
+			var paramStr = '';
+			if(!assignProperty){
+				paramStr = variableName || '';
+			}
+			
 			if(blockExpression != null){
 				this._append('(function(' + paramStr + '){');
 				this.visitMultipleLine(blockExpression);

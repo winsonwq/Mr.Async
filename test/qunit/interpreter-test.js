@@ -45,6 +45,16 @@ test('normal statement : assignment 2', function(){
 	eval(code);
 });
 
+test('normal statement : property assignment', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		var a = {};
+		a.i = 1;
+		equal(a.i, 1);
+	});
+	eval(code);
+});
+
 test('normal statement : if-else', function(){
 	expect(1);
 	var code = Mr.Async.recode(function(){
@@ -571,6 +581,7 @@ test('$await : switch 4', function(){
 	stop();
 });
 
+
 test('$await : statment before async in try-catch-finally', function(){
 	expect(4);
 	var code = Mr.Async.recode(function(){
@@ -594,6 +605,7 @@ test('$await : statment before async in try-catch-finally', function(){
 	stop(); 
 });
 
+/*
 test('$await : statment in async in try-catch-finally', function(){
 	expect(6);
 	var code = Mr.Async.recode(function(){
@@ -616,8 +628,9 @@ test('$await : statment in async in try-catch-finally', function(){
 	//eval(code);
 	//stop(); 
 });
+*/
 
-test('$await : property assignment not supported.', function(){
+test('$await : property assignment', function(){
 	expect(1);
 	var code = Mr.Async.recode(function(){
 		var a = {};
@@ -625,9 +638,36 @@ test('$await : property assignment not supported.', function(){
 		equal(a.i, 1);
 		start();
 	});
+	
+	eval(code);
+	stop();
+});
 
-	//eval(code);
-	//stop();
+test('$await : property assignment 2', function(){
+	expect(1);
+	var code = Mr.Async.recode(function(){
+		var a = { b : {}};
+		a.b.i = $await(delay());
+		equal(a.b.i, 1);
+		start();
+	});
+	
+	eval(code);
+	stop();
+});
+
+test('$await : property assignment 3', function(){
+	expect(2);
+	var code = Mr.Async.recode(function(){
+		var a = { b : {}};
+		a.b.i = $await(delay(), delay());
+		equal(a.b.i[0], 1);
+		equal(a.b.i[1], 1);
+		start();
+	});
+	
+	eval(code);
+	stop();
 });
 
 test('$await : if-else scope', function(){
