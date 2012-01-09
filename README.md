@@ -83,7 +83,7 @@ var arr = [1, 2, 3, 4, 5];
 Mr.asynEach(arr, function(i){
     console.log(i);
     window.setTimeout(this.callback(), 1000);
-});
+}).start();
 // output
 // 1
 // 2
@@ -102,7 +102,7 @@ Mr.asynIterator(Mr.range('[1, 5]'), function(num){
     }
     console.log(num);
     window.setTimeout(this.callback(), 1000);
-});
+}).start();
 // output
 // 1
 // 2
@@ -123,7 +123,7 @@ var infinite = {
 Mr.asynIterator(infinite, function(num){
     console.log(num);
     window.setTimeout(this.callback(), 1000);
-});
+}).start();
 // output
 // 0
 // 1
@@ -149,8 +149,8 @@ Mr.asynIterator(Mr.range('[0, 3)'), function(i){
     Mr.asynIterator(Mr.range('[0, 3)'), function(ii){
         console.log(i + ',' + ii);
         window.setTimeout(this.callback(), 1000); // print each second.
-    }, this.callback());
-});
+    }, this.callback()).start();
+}).start();
 // output
 // 0, 0
 // 0, 1
@@ -169,13 +169,13 @@ The second one seems a little more complicated than the first, but it perform As
 Mr.asynEach([1, 2, 3], function(num){
     console.log(num);
     setTimeout(this.callback(), 1000);
-});
+}).start();
 
 Mr.asynEach([1, 2, 3], function(num){
     console.log(num);
     var outer = this;
     setTimeout(function(){ outer.next(); }, 1000);
-});
+}).start();
 
 // the two methods are same.
 ```
@@ -194,7 +194,7 @@ Mr.asynEach([2, 3, 4], function(num){
     caculate(num, this.callback(function(result){
         console.log(result);
     }));
-});
+}).start();
 // output
 // 4
 // 9
