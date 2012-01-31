@@ -1,9 +1,5 @@
 module('Mr.Async.Interpreter');
 
-test('aaa', function(){
-
-});
-
 test('Object Exist', function(){
 	ok(UglifyJS, 'parser exists.');
 	ok(UglifyJS.parse, 'UglifyJS.parse exists.');
@@ -28,7 +24,7 @@ test('normal statement : assignment ', function(){
 		equal(typeof e, 'function');
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : assignment 2', function(){
@@ -42,7 +38,7 @@ test('normal statement : assignment 2', function(){
 		equal(d.length, 3);
 		equal(typeof e, 'function');
 	});
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : property assignment', function(){
@@ -52,7 +48,7 @@ test('normal statement : property assignment', function(){
 		a.i = 1;
 		equal(a.i, 1);
 	});
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : if-else', function(){
@@ -66,7 +62,7 @@ test('normal statement : if-else', function(){
 		equal(ret, true);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : function', function(){
@@ -84,7 +80,7 @@ test('normal statement : function', function(){
 		equal(ret, false);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : anonymous function', function(){
@@ -97,7 +93,7 @@ test('normal statement : anonymous function', function(){
 		equal(ret, false);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 
@@ -111,7 +107,7 @@ test('normal statement : function', function(){
 		equal(ret, false);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : for loop', function(){
@@ -125,7 +121,7 @@ test('normal statement : for loop', function(){
 		equal(ret, 55);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : for loop 2', function(){
@@ -139,7 +135,7 @@ test('normal statement : for loop 2', function(){
 		equal(ret, 55);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : while loop', function(){
@@ -153,7 +149,7 @@ test('normal statement : while loop', function(){
 		equal(ret, 55);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : do-while loop', function(){
@@ -167,7 +163,7 @@ test('normal statement : do-while loop', function(){
 		equal(ret, 55);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : switch', function(){
@@ -189,7 +185,7 @@ test('normal statement : switch', function(){
 		equal(ret, true);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : try-catch-finally', function(){
@@ -208,7 +204,7 @@ test('normal statement : try-catch-finally', function(){
 		equal(i, 2);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('normal statement : new', function(){
@@ -220,7 +216,7 @@ test('normal statement : new', function(){
 		equal(obj.a, 1);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 function delay(duration){
@@ -241,7 +237,7 @@ test('$await', function(){
 		ok(true, 'done.');
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -255,7 +251,7 @@ test('$await : assignment', function(){
 		equal(i, 1);
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -272,7 +268,7 @@ test('$await : array assignment ', function(){
 		equal(arr[1], 1);
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -286,7 +282,7 @@ test('$await : multiple assignment', function(){
 		equal(d, 1);
 		start();
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -304,7 +300,7 @@ test('$await : multiple assignment 2', function(){
 		equal(d, 1);
 		start();
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -323,7 +319,7 @@ test('$await : if-else ', function(){
 		equal(ret, 1);
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -343,7 +339,7 @@ test('$await : if-else 2', function(){
 		equal(ret, 1);
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -358,7 +354,7 @@ test('$await : for loop', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 
 });
@@ -377,7 +373,7 @@ test('$await : for loop 2', function(){
 		equal(ret, 3);
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -387,7 +383,7 @@ test('$await : in for loop before statement ', function(){
 		equal(i, 3);
 		start();
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -403,7 +399,7 @@ test('$await : while loop ', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -421,7 +417,7 @@ test('$await : while loop 2', function(){
 		start();
 		equal(ret, 3);
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -438,7 +434,7 @@ test('$await : do-while loop ', function(){
 		start();
 		equal(ret, 3);
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -455,7 +451,7 @@ test('$await : do-while loop 2', function(){
 		start();
 		equal(ret, 3);
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -484,7 +480,7 @@ test('$await : switch 1', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -514,7 +510,7 @@ test('$await : switch 2', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -545,7 +541,7 @@ test('$await : switch 3', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -577,7 +573,7 @@ test('$await : switch 4', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -601,7 +597,7 @@ test('$await : statment before async in try-catch-finally', function(){
 		}
 		start();
 	});
-	eval(code);
+	eval(code).start();
 	stop(); 
 });
 
@@ -625,7 +621,7 @@ test('$await : statment in async in try-catch-finally', function(){
 		}
 		start();
 	});
-	//eval(code);
+	//eval(code).start();
 	//stop(); 
 });
 */
@@ -639,7 +635,7 @@ test('$await : property assignment', function(){
 		start();
 	});
 	
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -652,7 +648,7 @@ test('$await : property assignment 2', function(){
 		start();
 	});
 	
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -666,7 +662,7 @@ test('$await : property assignment 3', function(){
 		start();
 	});
 	
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -685,7 +681,7 @@ test('$await : if-else scope', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -712,7 +708,7 @@ test('$await : function', function(){
 		start();
 	});
 
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -723,7 +719,7 @@ test('$await : this', function(){
 		equal(this.i, 1);
 	});
 
-	eval(code);
+	eval(code).start();
 });
 
 test('$await : this 2', function(){
@@ -735,7 +731,7 @@ test('$await : this 2', function(){
 		equal(this.i, 1);
 		start();
 	});
-	eval(code);
+	eval(code).start();
 	stop();
 });
 
@@ -751,6 +747,29 @@ test('$await : this 3', function(){
 		equal(this.b, 3);
 		start();
 	});
-	eval(code);
+	eval(code).start();
+	stop();
+});
+
+test('$await : recode with arguments', function(){
+
+	var code = Mr.Async.recode(function(a, b){
+		equal(a, 1);
+		equal(b, 2);
+	});
+	eval(code).start(1, 2);
+});
+
+test('$await : recode $await with arguments', function(){
+
+	var code = Mr.Async.recode(function(a, b){
+		var a1 = $await(delay()), b1 = $await(delay());
+		equal(a, 1);
+		equal(b, 2);
+		equal(a1, 1);
+		equal(b1, 1);
+		start();
+	});
+	eval(code).start(1, 2);
 	stop();
 });

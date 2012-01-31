@@ -1,6 +1,6 @@
 (function(){
 
-	var version = '0.1.1';
+	var version = '0.2.1';
 
 	var parser;
 	var recoder;
@@ -37,8 +37,15 @@
 			throw 'argument is not a function.';
 
 		recoder.reset();
-
-		var codes = '(' + String(func) + ').apply(this);';
+		
+		var codes = '(function(){ \
+			var _ = this; \
+			return { \
+				start : function(){ \
+					(' + String(func) + ').apply(_, arguments); \
+				} \
+			} \
+		}).apply(this);';
 		var expressions = parser.parse(codes);
 		recoder.visit(expressions);
 		return recoder.getCode();

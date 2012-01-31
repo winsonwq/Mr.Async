@@ -1,6 +1,6 @@
 (function(){
 
-	var version = '0.1.1';
+	var version = '0.2.1';
 	var root;
 	var EV;
 
@@ -19,10 +19,6 @@
 	    	root = exports = module.exports;
 	    }
     	root = exports;
-	} else if (typeof define === 'function' && define.amd) {
-		define('Mr.Recoder', function() {
-			return root;
-		});
 	} else {
 		if(this.Mr == null) this.Mr = {};
 		this.Mr.Recoder = root = {};

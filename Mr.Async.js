@@ -121,12 +121,6 @@
             if (min == undefined || min == null || typeof (parseInt(min)) != 'number')
                 throw 'min is undefined or null or is not a number';
 
-            // why 
-            // '0' > '27' : false ?
-            // '1' > '27' : false ?
-            // '2' > '27' : false ?
-            // '3' > '27' : true ?!!!!
-            // '10' > '27' : false ?
             if (parseInt(min) > parseInt(max))
                 throw 'min is larger than max.';
 
