@@ -1,6 +1,6 @@
 (function(Mr){
-	
-	var version = '0.1.1';
+    
+	var version = '0.2.1';
 	var Mr;
 
 	if (typeof exports !== 'undefined') {
