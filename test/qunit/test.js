@@ -409,6 +409,14 @@ test('Mr.Deferred', function(){
 	ok(Mr.Deferred(), 'ok');
 });
 
+test('Mr.Deferred promise', function(){
+	expect(2);
+	
+	var promise = Mr.Deferred().promise();
+	equal(promise.resolve, undefined);
+	equal(promise.reject, undefined);
+});
+
 test('Mr.Deferred functionality', function(){
 	expect(5);
 
@@ -420,7 +428,8 @@ test('Mr.Deferred functionality', function(){
 			else
 				de.reject(false);
 		}, 13);
-		return de;
+		
+		return de.promise();
 	}
 	
 	asyncGreatThan(2, 1).done(function(ret){
@@ -434,15 +443,17 @@ test('Mr.Deferred functionality', function(){
 		start()
 	});
 	stop();
-	asyncGreatThan(2, 1).then(function(ret){
-		equal(ret, true);
-	}, function(ret){
-		throw '1 must be less than 2.';
-	}).always(function(ret){
-		equal(typeof(ret), 'object');
-		equal(ret.isResolved(), true);
-		start();
-	});
+	asyncGreatThan(2, 1).then(
+		function(ret){
+			equal(ret, true);
+		}, 
+		function(ret){
+			throw '1 must be less than 2.';
+		}).always(function(ret){
+			equal(typeof(ret), 'object');
+			equal(ret.isResolved(), true);
+			start();
+		});
 	stop();
 });
 
@@ -452,7 +463,7 @@ test('Mr.when functionality', function(){
 		setTimeout(function(){
 			de.resolve(1);
 		}, 1000);
-		return de;
+		return de.promise();
 	}
 	
 	function asyncFunc2(){
@@ -460,7 +471,7 @@ test('Mr.when functionality', function(){
 		setTimeout(function(){
 			de.resolve(2);
 		}, 1000);
-		return de;
+		return de.promise();
 	}
 	
 	// fail one
@@ -469,7 +480,7 @@ test('Mr.when functionality', function(){
 		setTimeout(function(){
 			de.reject(3);
 		}, 1000);
-		return de;
+		return de.promise();
 	}
 	
 	// for 1 and 2

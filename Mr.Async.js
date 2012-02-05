@@ -229,6 +229,11 @@
 			this._finished = true;
 			return this;
 		};
+		
+		var readonly = new ReadOnlyDeferred(this);
+		this.promise = function(){
+			return readonly;
+		};
 	}
 	
 	function MergedDeferred(args){
@@ -324,6 +329,24 @@
 			executeDeferredFunc.call(this, this._alwaysFns, args);
 		}
 	};
+	
+	
+	function ReadOnlyDeferred(deferred){
+		this.deferred = deferred;
+	}
+	
+	// extend ReadOnlyDeferred
+	(function(){
+		function __bind_func(method_name){
+			ReadOnlyDeferred.prototype[method_name] = function(){
+				return deferredPrototype[method_name].apply(this.deferred, Array.prototype.slice.call(arguments));
+			}
+		}
+		
+		for(var method in deferredPrototype){
+			__bind_func(method);
+		}
+	})();
 	
 	Deferred.prototype = deferredPrototype;
 	MergedDeferred.prototype = deferredPrototype;

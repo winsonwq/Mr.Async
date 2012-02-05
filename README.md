@@ -226,7 +226,7 @@ function asynFn(){
     setTimeout(function(){
         dfd.reject(2, 2, 2, 2, 2);
     }, Math.random(1) * 2500);
-    return dfd;
+    return dfd.promise();
 }
 
 asynFn()
@@ -298,7 +298,7 @@ function asynFn(){
     setTimeout(function(){
         dfd.reject(2, 2, 2, 2, 2);
     }, Math.random(1) * 2500);
-    return dfd;
+    return dfd.promise();
 }
 
 function asynFn2(){
@@ -306,7 +306,7 @@ function asynFn2(){
     setTimeout(function(){
         dfd.resolve(33, 33, 33);
     }, Math.random(1) * 3000);
-    return dfd;
+    return dfd.promise();
 }
 
 Mr.when( asynFn(), asynFn2() )
