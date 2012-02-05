@@ -38,14 +38,15 @@
 
 		recoder.reset();
 		
-		var codes = '(function(){ \
-			var _ = this; \
-			return { \
-				start : function(){ \
-					(' + String(func) + ').apply(_, arguments); \
+		var codes = 
+			'(function(){ \
+				var _ = this; \
+				return { \
+					start : function(){ \
+						(' + String(func) + ').apply(_, arguments); \
+					} \
 				} \
-			} \
-		}).apply(this);';
+			}).apply(this);';
 		var expressions = parser.parse(codes);
 		recoder.visit(expressions);
 		return recoder.getCode();
