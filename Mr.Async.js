@@ -339,7 +339,7 @@
 	(function(){
 		function __bind_func(method_name){
 			ReadOnlyDeferred.prototype[method_name] = function(){
-				return deferredPrototype[method_name].apply(this.deferred, Array.prototype.slice.call(arguments));
+				return deferredPrototype[method_name].apply(this.deferred, args2arr(arguments));
 			}
 		}
 		
