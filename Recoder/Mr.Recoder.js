@@ -194,14 +194,11 @@
 							// add method call in if and else block;
 							item[2][1].push(callFunc);
 							item[3][1].push(callFunc);
-
-							expression.splice(i + 1, expression.length - i - 1);
-							expression.push(newFunc);
 							
 							// if-else is ok
 							item[item.length] = '$true';
 
-							this.visitMultipleLine([item].concat([newFunc]));
+							this.visitMultipleLine([newFunc].concat([item]));
 							return true;
 						case 'try':
 							var tryBlock = item[1];

@@ -378,12 +378,53 @@ test('$await : for loop 2', function(){
 });
 
 test('$await : in for loop before statement ', function(){
+	expect(1);
 	var code = Mr.Async.recode(function(){
 		for(var i = $await(delay()), len = 3; i < len ; i++);
 		equal(i, 3);
 		start();
 	});
 	eval(code).start();
+	stop();
+});
+
+test('$await : in for loop for bubblesort', function(){
+	expect(5);
+	
+	var array = [10, 6, 4, 22, 1];
+	
+	function swap(arr, i, ii){
+		var de = Mr.Deferred();
+		setTimeout(function(){
+			
+			var temp = arr[i];
+			arr[i] = arr[ii];
+			arr[ii] = temp;
+			
+			de.resolve();
+		}, 100)
+		return de.promise();
+	}
+	
+	var code = Mr.Async.recode(function(arr){
+		for(var i = 0, len = arr.length; i < len - 1; i++){
+			for(var ii = i + 1; ii < len ; ii++){
+				if(arr[i] > arr[ii]){
+					$await(swap(arr, i, ii));
+				}	
+			}
+		}
+
+		equal(arr[0], 1);
+		equal(arr[1], 4);
+		equal(arr[2], 6);
+		equal(arr[3], 10);
+		equal(arr[4], 22);
+		
+		start();
+	});
+	console.log(code);
+	eval(code).start(array);
 	stop();
 });
 
