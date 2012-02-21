@@ -1,8 +1,8 @@
 (function(){
 	
 	var root;
-
-	var version = '0.1.1';
+	var moduleName = 'expression-visitor';
+	var version = '0.2.1';
 
 	if (typeof exports !== 'undefined') {
 	    if (typeof module !== 'undefined' && module.exports) {
@@ -10,11 +10,11 @@
 	    }
     	root = exports;
 	} else if (typeof define === 'function' && define.amd) {
-		define('ExpressionVisitor', function() {
+		define(moduleName, function() {
 			return root;
 		});
 	} else {
-		this['EV'] = root = {};
+		this.EV = root = {};
 	}
 
 	function ExpressionVisitor(){
@@ -490,6 +490,7 @@
 		ctor.prototype = parent.prototype;
 		//
 		child.prototype = new ctor();
+		child.prototype.constructor = child;
 		child.__super = parent.prototype;
 	}
 
@@ -499,9 +500,9 @@
 			child.prototype[key] = function(){
 				var args = [].slice.call(arguments);
 				var _ = this;
-				args.push(function(){
+				this.base = function(){
 					child.__super[key].apply(_, arguments);
-				});
+				};
 				ext[key].apply(this, args);
 			};
 		}else{

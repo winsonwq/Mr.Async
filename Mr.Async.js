@@ -1,6 +1,7 @@
-(function(Mr){
+(function(){
     
 	var version = '0.2.1';
+	var moduleName = 'mr-async'
 	var Mr;
 
 	if (typeof exports !== 'undefined') {
@@ -9,7 +10,7 @@
 	    }
     	Mr = exports;
 	} else if (typeof define === 'function' && define.amd) {
-		define('Mr.Async', function() {
+		define(moduleName, function() {
 			return Mr;
 		});
 	} else {

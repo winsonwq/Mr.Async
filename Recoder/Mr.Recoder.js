@@ -1,6 +1,7 @@
 (function(){
 
 	var version = '0.2.1';
+	var moduleName = 'mr-recoder'
 	var root;
 	var EV;
 
@@ -25,31 +26,31 @@
 	}
 
 	var ev = EV.extend({
-		visitForLoop : function(expression, base){
+		visitForLoop : function(expression){
 			var cnt = this._needToRecode(expression);
 			if(cnt){
 				this._recodeLoop(expression[2], expression[4], expression[1], expression[3], expression[5]);
 				return expression;
 			}
-			return base(expression);
+			return this.base(expression);
 		},
-		visitDoWhileLoop : function(expression, base){
+		visitDoWhileLoop : function(expression){
 			var cnt = this._needToRecode(expression);
 			if(cnt){
 				this._recodeLoop(expression[1], expression[2], expression[2]);
 				return expression;
 			}
-			return base(expression);
+			return this.base(expression);
 		},
-		visitWhileLoop : function(expression, base){
+		visitWhileLoop : function(expression){
 			var cnt = this._needToRecode(expression);
 			if(cnt){
 				this._recodeLoop(expression[1], expression[2], null, null, expression[3]);
 				return expression;
 			}
-			return base(expression);
+			return this.base(expression);
 		},
-		visitStatement : function(expression, base){
+		visitStatement : function(expression){
 			if(this._needToRecode(expression)){
 				var key = expression[0];
 				switch(key){
@@ -61,9 +62,9 @@
 						return expression;
 				}
 			}
-			return base(expression);
+			return this.base(expression);
 		},
-		visitVariable : function(expression, base){
+		visitVariable : function(expression){
 
 			var normal = [];
 			var awaits = [];
@@ -109,7 +110,7 @@
 
 			return expression;
 		},
-		visitMultipleLine : function(expression, base){
+		visitMultipleLine : function(expression){
 			for(var i = 0 ; i < expression.length ; i++){
 				var item = expression[i];
 				if(this._dispatchAwait(item, expression, i)){
