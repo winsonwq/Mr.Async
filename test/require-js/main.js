@@ -13,7 +13,7 @@ require(['./Mr.Async', 'mr-recoder'], function(Mr, interpreter){
 	
 	var async = function(){
 		var dfd = Mr.Deferred();
-		setTimeout(function(){
+		setTimeout(function(){ 
 			dfd.resolve(1);
 		}, 1000);
 		

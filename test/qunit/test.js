@@ -1,4 +1,8 @@
-require(['../../Mr.Async'], function(Mr){
+require.config({
+	baseUrl : '../../lib/'
+})
+
+require(['./Mr.Async'], function(Mr){
 	
 	module('Mr.Async.js');
 

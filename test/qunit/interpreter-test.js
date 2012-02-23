@@ -1,4 +1,8 @@
-require(['../../Mr.Async', '../../Recoder/Mr.Async.Interpreter'], function(Mr, interpreter){
+require.config({
+	baseUrl : '../../lib/'
+});
+
+require(['./Mr.Async', './Recoder/Mr.Async.Interpreter'], function(Mr, interpreter){
 
 	Mr.Async = interpreter;
 

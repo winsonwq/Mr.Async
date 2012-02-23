@@ -1,0 +1,19 @@
+{
+  "author": "Qiu Wang <winsonwq@gmail.com> (http://sheldonw.sinaapp.com)",
+  "name": "Mr.Async",
+  "description": "A JavaScript Asynchronism Improvement Library",
+  "version": "0.3.1",
+  "homepage": "https://github.com/winsonwq/Mr.Async",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/winsonwq/Mr.Async.git"
+  },
+  "main": "./lib/Mr.Async.js",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+	"amdefine": ">=0.0.1"
+  },
+  "devDependencies": {}
+}
