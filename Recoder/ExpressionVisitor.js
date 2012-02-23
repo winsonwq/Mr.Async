@@ -1,21 +1,6 @@
-(function(){
+define(function(require, exports, module){
 	
-	var root;
-	var moduleName = 'expression-visitor';
-	var version = '0.2.1';
-
-	if (typeof exports !== 'undefined') {
-	    if (typeof module !== 'undefined' && module.exports) {
-	      root = exports = module.exports;
-	    }
-    	root = exports;
-	} else if (typeof define === 'function' && define.amd) {
-		define(moduleName, function() {
-			return root;
-		});
-	} else {
-		this.EV = root = {};
-	}
+	var version = '0.3.1';
 
 	function ExpressionVisitor(){
 		this.codes = [];
@@ -504,6 +489,7 @@
 					child.__super[key].apply(_, arguments);
 				};
 				ext[key].apply(this, args);
+				delete this.base;
 			};
 		}else{
 			// if not, just extend it;
@@ -511,7 +497,7 @@
 		}
 	}
 
-	root.extend = function(ext){
+	exports.extend = function(ext){
 		function EV_Child(){
 			ExpressionVisitor.apply(this, arguments);
 		};
@@ -527,4 +513,4 @@
 
 		return new EV_Child();
 	};
-})();
+});

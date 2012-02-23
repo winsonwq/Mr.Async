@@ -1,22 +1,8 @@
-(function(){
-    
-	var version = '0.2.1';
-	var moduleName = 'mr-async'
-	var Mr;
+define(function(require, exports, module){
 
-	if (typeof exports !== 'undefined') {
-	    if (typeof module !== 'undefined' && module.exports) {
-	    	Mr = exports = module.exports;
-	    }
-    	Mr = exports;
-	} else if (typeof define === 'function' && define.amd) {
-		define(moduleName, function() {
-			return Mr;
-		});
-	} else {
-		this.Mr = Mr = {};
-	}
-	
+	var version = '0.3.1';
+	var Mr = {};
+
 	Mr.BREAK = '____BREAK';
 	Mr.CONTINUE = '____CONTINUE';
 	
@@ -361,5 +347,7 @@
 	
 	Mr.Deferred = function(){ return new Deferred(); };
 	
-})();
+	return Mr;
+	
+});
 

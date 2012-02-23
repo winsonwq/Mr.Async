@@ -1,28 +1,11 @@
-(function(){
+define(function(require, exports, module){
 
-	var version = '0.2.1';
-	var moduleName = 'mr-recoder'
-	var root;
-	var EV;
-
-	if(typeof require !== 'undefined'){
-		EV = require('./ExpressionVisitor.js');
-	}else if(this.EV != null){
-		EV = this.EV;
-	}
-
+	var version = '0.3.1';
+	
+	var EV = require('./ExpressionVisitor');
+	
 	if(EV == null){
 		throw 'need ExpressionVisitor.js';
-	}
-
-	if (typeof exports !== 'undefined') {
-	    if (typeof module !== 'undefined' && module.exports) {
-	    	root = exports = module.exports;
-	    }
-    	root = exports;
-	} else {
-		if(this.Mr == null) this.Mr = {};
-		this.Mr.Recoder = root = {};
 	}
 
 	var ev = EV.extend({
@@ -465,7 +448,7 @@
 	};
 
 	for(var i = 0, len = ext.length ; i < len ; i++){
-		__bind(root, ev, ext[i]);
+		__bind(exports, ev, ext[i]);
 	}
-
-})();
+	
+});
