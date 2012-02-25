@@ -9,7 +9,7 @@ require.config({
 	]
 });
 
-require(['./Mr.Async', 'mr-recoder'], function(Mr, interpreter){
+require(['./lib/Mr.Async', 'mr-recoder'], function(Mr, interpreter){
 	
 	var async = function(){
 		var dfd = Mr.Deferred();
