@@ -3,13 +3,15 @@ require.config({
 	packages : [
 		{
 			name : 'mr-recoder',
-			location : 'Recoder',
+			location : 'lib/Recoder',
 			main : 'main'
 		}
 	]
 });
 
-require(['./lib/Mr.Async', 'mr-recoder'], function(Mr, interpreter){
+require(['./lib/Mr.Async', 'mr-recoder', 'test.js'], function(Mr, interpreter, test){
+	// why use .js extention will be use the current location
+	console.log(test);
 	
 	var async = function(){
 		var dfd = Mr.Deferred();
@@ -22,7 +24,7 @@ require(['./lib/Mr.Async', 'mr-recoder'], function(Mr, interpreter){
 	
 	var code = interpreter.recode(function(){
 		var ret = $await(async());
-		alert(1);
+		console.log(1);
 	});
 	
 	eval(code).start();

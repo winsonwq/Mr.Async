@@ -2,6 +2,17 @@
 <html>
 	<head>
 		<script data-main="main" type="text/javascript" src="http://requirejs.org/docs/release/1.0.6/minified/require.js"></script>
+		<script type="text/javascript">
+			define('t', ['./test.js'], function(test){
+				console.log('in define.');
+				return test;
+			});
+		</script>
+		<script type="text/javascript">
+			require(['t'], function(t){
+				console.log(2);
+			});
+		</script>
 	</head>
 	<body>
 		
