@@ -9,8 +9,35 @@ require.config({
 	]
 });
 
-require(['./lib/Mr.Async', 'mr-recoder', 'test.js'], function(mr, interpreter, test){
+require([
+	'./lib/Mr.Async', 
+	'mr-recoder', 
+	'test.js', 
+	'./lib/extention/web', 
+	'./lib/extention/common'], function(mr, interpreter, test, webExt, commonExt){
+	
+	if(typeof console == 'undefined'){
+		console = {
+			log : alert
+		}
+	}
+	
 	// why use .js extention will be use the current location
+	webExt(mr);
+	commonExt(mr);
+	
+	eval(interpreter.recode('mr', function(){
+		$await(mr.sleep(5000));
+		console.log('after 5s');
+	})).start();
+	
+	var button = document.getElementById('btn');
+	
+	eval(interpreter.recode('mr', function(){
+		$await(mr.once(button, 'click'));
+		console.log('click!');
+	})).start();
+	
 	console.log(test);
 	
 	var async = function(){
@@ -34,5 +61,5 @@ require(['./lib/Mr.Async', 'mr-recoder', 'test.js'], function(mr, interpreter, t
 	});
 	
 	eval(code).start();
-	eval(code2).start();	
+	eval(code2).start();
 });
