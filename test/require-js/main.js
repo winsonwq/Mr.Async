@@ -11,7 +11,7 @@ require.config({
 
 require([
 	'./lib/Mr.Async', 
-	'mr-recoder', 
+	'./lib/Recoder/Mr.Async.Interpreter', 
 	'test.js', 
 	'./lib/extention/web', 
 	'./lib/extention/common'], function(mr, interpreter, test, webExt, commonExt){
