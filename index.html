@@ -1,0 +1,422 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Mr.async by winsonwq</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/winsonwq/Mr.Async">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/winsonwq/Mr.Async/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/winsonwq/Mr.Async/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Mr.async</h1>
+          <p>Async in Mr.js</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/winsonwq">winsonwq</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Mr.Async</h1>
+
+<h2>Iterator</h2>
+
+<ul>
+<li>
+<strong>asynEach</strong> : function (array, callback, outerFunc)</li>
+<li>
+<strong>asynIterator</strong> : function (iterator, callback, outerFunc)</li>
+<li>
+<strong>range</strong> : function (minAndMax)</li>
+<li>
+<strong>infinite</strong> : function ()</li>
+</ul><p>Firstly, thanks to Jscex library created by Jeffrey Zhao. I realized what the Jscex solve, how Jscex can improve javascript asynchronism. After reading his blog, I have a try my own solution, AsynIterator.</p>
+
+<p>Suppose there is a array which contains 5 numbers( 1 - 5 ), user want to traverse this array and print the current value each 1 second. DO NOT tell me you will write like below:</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span> <span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// output</span>
+<span class="c1">// 5</span>
+<span class="c1">// 5</span>
+<span class="c1">// 5</span>
+<span class="c1">// 5</span>
+<span class="c1">// 5</span>
+<span class="c1">// it's wrong. !</span>
+</pre>
+</div>
+
+
+<p>OR</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="nx">print</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">print</span><span class="p">(</span><span class="nx">i</span><span class="p">){</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//output</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span>
+<span class="c1">// 4</span>
+<span class="c1">// 5</span>
+<span class="c1">// value is correct, but these values was printed immediately. so it's wrong too.</span>
+</pre>
+</div>
+
+
+<p>And how to make it right, mostly of us will write code like below:</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="p">(</span><span class="kd">function</span> <span class="nx">traverse</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">idx</span><span class="p">){</span>
+    <span class="nx">idx</span> <span class="o">=</span> <span class="nx">idx</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">idx</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">idx</span><span class="o">++</span><span class="p">]);</span>
+        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>  
+            <span class="nx">traverse</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">idx</span><span class="p">);</span>
+        <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">})(</span><span class="nx">arr</span><span class="p">);</span>
+
+<span class="c1">// output</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span>
+<span class="c1">// 4</span>
+<span class="c1">// 5</span>
+<span class="c1">// it's correct, but not easy to understand.  </span>
+</pre>
+</div>
+
+
+<p>The code is too complicated to understand, the problem is how to make code structure like for loop, and how to make the logic clear. Right now, we have Mr.asynIterator function. Example:</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">asynEach</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(),</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+<span class="c1">// output</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span>
+<span class="c1">// 4</span>
+<span class="c1">// 5</span>
+<span class="c1">// it's absolutely correct. And code structure seems good.</span>
+</pre>
+</div>
+
+
+<p>This just a simple demo for solving asynchronization problem. In addition, if you want to traverse other kinds of object, not a array. you can use Mr.asynIterator function. Mr.range will makes a range with number in a special format, such as "[1, 10]" means number 1 to 10. "(1, 10]" means 2 to 10. Mr.infinite will make a infinite range which means 1 to ∞. Example:</p>
+
+<div class="highlight">
+<pre><span class="nx">Mr</span><span class="p">.</span><span class="nx">asynIterator</span><span class="p">(</span><span class="nx">Mr</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="s1">'[1, 5]'</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">num</span> <span class="o">==</span> <span class="mi">4</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">Mr</span><span class="p">.</span><span class="nx">CONTINUE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(),</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+<span class="c1">// output</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span>
+<span class="c1">// 5</span>
+</pre>
+</div>
+
+
+<p>Of course, user can create his own object to be iterated if the object have next function to return the next value. Example:</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">infinite</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">_cnt</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">next</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">asynIterator</span><span class="p">(</span><span class="nx">infinite</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(),</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+<span class="c1">// output</span>
+<span class="c1">// 0</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span>
+<span class="c1">// 4</span>
+<span class="c1">// ...</span>
+</pre>
+</div>
+
+
+<p>At this moment, we can well deal with the asyn problem, but how about nesting iteration. Don't worry, you can follow as below:</p>
+
+<div class="highlight">
+<pre><span class="c1">// default</span>
+<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">ii</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="nx">ii</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="p">;</span> <span class="nx">ii</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="s1">','</span> <span class="o">+</span> <span class="nx">ii</span><span class="p">);</span>
+        <span class="c1">// all numbers will be shown at a moment.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// but now, using Mr.asynIterator</span>
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">asynIterator</span><span class="p">(</span><span class="nx">Mr</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="s1">'[0, 3)'</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">){</span>
+    <span class="nx">Mr</span><span class="p">.</span><span class="nx">asynIterator</span><span class="p">(</span><span class="nx">Mr</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="s1">'[0, 3)'</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ii</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="s1">','</span> <span class="o">+</span> <span class="nx">ii</span><span class="p">);</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(),</span> <span class="mi">1000</span><span class="p">);</span> <span class="c1">// print each second.</span>
+    <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">()).</span><span class="nx">start</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+<span class="c1">// output</span>
+<span class="c1">// 0, 0</span>
+<span class="c1">// 0, 1</span>
+<span class="c1">// 0, 2</span>
+<span class="c1">// 1, 0</span>
+<span class="c1">// 1, 1</span>
+<span class="c1">// 1, 2</span>
+<span class="c1">// 2, 0</span>
+<span class="c1">// 2, 1</span>
+<span class="c1">// 2, 2</span>
+</pre>
+</div>
+
+
+<p>The second one seems a little more complicated than the first, but it perform Asynchronously, the first one can nenver do this. AsynIterator object have two member functions call callback and next. In these demo codes, you will find many callback methods have been invoked, the example below show how callback method works. Example:</p>
+
+<div class="highlight">
+<pre><span class="nx">Mr</span><span class="p">.</span><span class="nx">asynEach</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(),</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">asynEach</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">outer</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> <span class="nx">outer</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span> <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+
+<span class="c1">// the two methods are same.</span>
+</pre>
+</div>
+
+
+<p>This example we can see callback is a wrapper of next, and two method are trying to deal with the next value from iterated object. In addition, callback handler have a function argument which contains the result of asynchronization method.</p>
+
+<div class="highlight">
+<pre><span class="kd">function</span> <span class="nx">caculate</span><span class="p">(</span><span class="nx">num</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">timespan</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">callback</span><span class="p">(</span><span class="nx">num</span> <span class="o">*</span> <span class="nx">num</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nx">timespan</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">asynEach</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+    <span class="nx">caculate</span><span class="p">(</span><span class="nx">num</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+    <span class="p">}));</span>
+<span class="p">}).</span><span class="nx">start</span><span class="p">();</span>
+<span class="c1">// output</span>
+<span class="c1">// 4</span>
+<span class="c1">// 9</span>
+<span class="c1">// 16</span>
+</pre>
+</div>
+
+
+<p>caculate method is a simple asyn method which is usually have a callback argument. By using Mr.asynEach, we can easily get the result of caculation regardless of the caculation time. It's cool. You can visit a advanced demo Selection Sort. (Please choose a browser which support SVG).</p>
+
+<h2>Mr.Deferred</h2>
+
+<p><strong><em>Mr.Deferred : function ()</em></strong></p>
+
+<p>According to CommonJS Promise/A, Mr.Deferred function will return a Deferred object. And a Deferred object always contains these methods:</p>
+
+<ul>
+<li>always : function (alwaysHandler), add always handler.</li>
+<li>done : function (doneHandler), add done handler.</li>
+<li>fail : function (failureHandler), add failure handler.</li>
+<li>then : function (doneHandler, failureHandler), add done handler and failer handler.</li>
+<li>isRejected : function (), check if rejected.</li>
+<li>isResolved : function (), check if resolved.</li>
+</ul><p>Example:</p>
+
+<div class="highlight">
+<pre><span class="kd">function</span> <span class="nx">asynFn</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">Mr</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2000</span><span class="p">);</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2500</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">asynFn</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'done'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'fail'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span>
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'then-&gt;done'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">},</span> 
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'then-&gt;fail'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">})</span>
+    <span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'always'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span>
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'then2-&gt;done'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">},</span> 
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'then2-&gt;fail'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">});</span>
+
+<span class="c1">// if succeed, output:</span>
+<span class="c1">// done</span>
+<span class="c1">// [1, 1, 1, 1, 1]</span>
+<span class="c1">// then-&gt;done</span>
+<span class="c1">// [1, 1, 1, 1, 1]</span>
+<span class="c1">// then2-&gt;done</span>
+<span class="c1">// [1, 1, 1, 1, 1]</span>
+<span class="c1">// always</span>
+<span class="c1">// [Object { _doneFns=, more...}] // the deferred object in firebug console.</span>
+
+<span class="c1">// if failure, output:</span>
+<span class="c1">// fail</span>
+<span class="c1">// [2, 2, 2, 2, 2]</span>
+<span class="c1">// then-&gt;fail</span>
+<span class="c1">// [2, 2, 2, 2, 2]</span>
+<span class="c1">// then2-&gt;fail</span>
+<span class="c1">// [2, 2, 2, 2, 2]</span>
+<span class="c1">// always</span>
+<span class="c1">// [Object { _doneFns=, more...}] // the deferred object in firebug console. </span>
+</pre>
+</div>
+
+
+<h2>Mr.when</h2>
+
+<p><em><strong>Mr.when : function(deferredObj1[, deferredObj2, [deferredObj3, ...]])</strong></em></p>
+
+<p>We can use Mr.when function to deal with multiple Deferred objects. </p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="kd">function</span> <span class="nx">asynFn</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">Mr</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2000</span><span class="p">);</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2500</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">asynFn2</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">dfd</span> <span class="o">=</span> <span class="nx">Mr</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">dfd</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">33</span><span class="p">);</span>
+    <span class="p">},</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3000</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">dfd</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">Mr</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span> <span class="nx">asynFn</span><span class="p">(),</span> <span class="nx">asynFn2</span><span class="p">()</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'when:done'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'when:fail'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'when:always'</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span>
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'when:then-&gt;done'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">},</span>
+        <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'when:then-&gt;fail'</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">);</span>
+
+<span class="c1">// if succeed, output:</span>
+<span class="c1">// when:done</span>
+<span class="c1">// [1, 1, 1, 1, 1, 33, 33, 33]</span>
+<span class="c1">// when:then-&gt;done</span>
+<span class="c1">// [1, 1, 1, 1, 1, 33, 33, 33]</span>
+<span class="c1">// when:always</span>
+<span class="c1">// [Object { _doneFns=, more...}, Object { _doneFns=, more...}] // the two deferred objects in firebug.</span>
+</pre>
+</div>
+
+
+<h2>Test</h2>
+
+<p>Tested by QUnit, see <em>/Mr.js/Mr.Async/test/qunit/index.html</em> when you clone this library.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
