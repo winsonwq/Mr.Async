@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/winsonwq/Mr.Async.png)](http://travis-ci.org/winsonwq/Mr.Async)
 # Mr.Async
 
 ## Iterator
