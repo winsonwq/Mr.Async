@@ -773,7 +773,7 @@ require(['./Mr.Async', './Recoder/Mr.Async.Interpreter'], function(Mr, interpret
 			equal(this.i, 1);
 			start();
 		});
-		eval(code).start();
+		eval(code).start(); 
 		stop();
 	});
 
