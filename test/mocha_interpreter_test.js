@@ -1,6 +1,7 @@
 require('seajs');
 
 var Mr = require('../lib/Mr.Async');
+var sinon = require('sinon');
 var interpreter = require('../lib/Recoder/Mr.Async.Interpreter');
 var assert = require('chai').assert;
 
@@ -742,7 +743,6 @@ describe('Mr.Async.Interpreter', function(){
 	});
 
 	it('$await : recode $await with arguments', function(done){
-
 		var code = Mr.Async.recode(function(a, b){
 			var a1 = $await(delay()), b1 = $await(delay());
 			assert.equal(a, 1);
@@ -752,5 +752,18 @@ describe('Mr.Async.Interpreter', function(){
 			done();
 		});
 		eval(code).start(1, 2);
+	});
+
+	describe('Mr.Async.Interpreter Core', function() {
+	  it('should use global custom Mr object', function (done) {
+	  	var m = Mr;
+	  	var spy = sinon.spy(m, 'when');
+	  	var code = interpreter.recode('m', function(){
+	  		$await(delay());
+	  		assert.isTrue(spy.called);
+	  	});
+	  	eval(code).start();
+	    done();
+	  });
 	});
 });

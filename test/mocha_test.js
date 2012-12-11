@@ -415,4 +415,5 @@ describe('Mr.Async Core', function(){
 				assert.equal(val2, 3);
 			});
 	});
+	
 });
