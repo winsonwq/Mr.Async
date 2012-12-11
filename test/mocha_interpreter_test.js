@@ -1,69 +1,79 @@
-seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], function(Mr, interpreter){
+require('seajs');
 
+var Mr = require('../lib/Mr.Async');
+var interpreter = require('../lib/Recoder/Mr.Async.Interpreter');
+var assert = require('chai').assert;
+
+describe('Mr.Async.Interpreter', function(){
+
+	var originalTimeout = setTimeout;
 	Mr.Async = interpreter;
 
-	module('Mr.Async.Interpreter');
-
-	test('Object Exist', function(){
-		ok(Mr);
-		ok(Mr.Async, 'Mr.Async exists');
-		ok(Mr.Async.recode, 'Mr.Async.recode function');
+	beforeEach(function () {
+	  setTimeout = function(callback, timeout){
+	  	originalTimeout(callback, 0);
+	  };
 	});
 
-	test('normal statement : assignment ', function(){
-		expect(5);
+	afterEach(function () {
+	  setTimeout = originalTimeout;
+	});
+
+	it('Object Exist', function(){
+		assert.ok(Mr);
+		assert.ok(Mr.Async, 'Mr.Async exists');
+		assert.ok(Mr.Async.recode, 'Mr.Async.recode function');
+	});
+
+	it('normal statement : assignment ', function(){
 		var code = Mr.Async.recode(function(){
 			var a = 0, b = "1", c = { a : 1 }, d = [1,2,3], e = function(){};
-			equal(a, 0);
-			equal(b, "1");
-			equal(c.a, 1);
-			equal(d.length, 3);
-			equal(typeof e, 'function');
+			assert.equal(a, 0);
+			assert.equal(b, "1");
+			assert.equal(c.a, 1);
+			assert.equal(d.length, 3);
+			assert.equal(typeof e, 'function');
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : assignment 2', function(){
-		expect(5);
+	it('normal statement : assignment 2', function(){
 		var code = Mr.Async.recode(function(){
 			var a, b, c, d, e;
 			a = 0, b = "1", c = { a : 1 }, d = [1,2,3], e = function(){};
-			equal(a, 0);
-			equal(b, "1");
-			equal(c.a, 1);
-			equal(d.length, 3);
-			equal(typeof e, 'function');
+			assert.equal(a, 0);
+			assert.equal(b, "1");
+			assert.equal(c.a, 1);
+			assert.equal(d.length, 3);
+			assert.equal(typeof e, 'function');
 		});
 		eval(code).start();
 	});
 
-	test('normal statement : property assignment', function(){
-		expect(1);
+	it('normal statement : property assignment', function(){
 		var code = Mr.Async.recode(function(){
 			var a = {};
 			a.i = 1;
-			equal(a.i, 1);
+			assert.equal(a.i, 1);
 		});
 		eval(code).start();
 	});
 
-	test('normal statement : if-else', function(){
-		expect(1);
+	it('normal statement : if-else', function(){
 		var code = Mr.Async.recode(function(){
 			var a = 1 + 1, ret;
 			if(a >= 2){
 				ret = true;
 			}else ret = false;
 
-			equal(ret, true);
+			assert.equal(ret, true);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : function', function(){
-		expect(1);
+	it('normal statement : function', function(){
 		var code = Mr.Async.recode(function(){
 			function innerMethod(){
 				return Math.random() * 10;
@@ -74,97 +84,90 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 				ret = true;
 			}else ret = false;
 
-			equal(ret, false);
+			assert.equal(ret, false);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : anonymous function', function(){
-		expect(1);
+	it('normal statement : anonymous function', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = (function(){
 				return false;
 			})();
 
-			equal(ret, false);
+			assert.equal(ret, false);
 		});
 
 		eval(code).start();
 	});
 
 
-	test('normal statement : function', function(){
-		expect(1);
+	it('normal statement : function', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = (function a(){
 				return false;
 			})();
 
-			equal(ret, false);
+			assert.equal(ret, false);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : for loop', function(){
-		expect(1);
+	it('normal statement : for loop', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = 0;
 			for(var i = 0, len = 10; i <= len ; i++){
 				ret += i;
 			}
 
-			equal(ret, 55);
+			assert.equal(ret, 55);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : for loop 2', function(){
-		expect(1);
+	it('normal statement : for loop 2', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i, len;
 			for(i = 0, len = 10; i <= len ; i++){
 				ret += i;
 			}
 
-			equal(ret, 55);
+			assert.equal(ret, 55);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : while loop', function(){
-		expect(1);
+	it('normal statement : while loop', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i = 0;
 			while(i++ < 10){
 				ret += i;
 			}
 
-			equal(ret, 55);
+			assert.equal(ret, 55);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : do-while loop', function(){
-		expect(1);
+	it('normal statement : do-while loop', function(){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i = 0;
 			do{
 				ret += i;
 			}while(i++ < 10);
 
-			equal(ret, 55);
+			assert.equal(ret, 55);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : switch', function(){
-		expect(1);
+	it('normal statement : switch', function(){
 		var code = Mr.Async.recode(function(){
 			var i = 'love', ret;
 			switch(i){
@@ -179,14 +182,13 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 					break;
 			}
 
-			equal(ret, true);
+			assert.equal(ret, true);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : try-catch-finally', function(){
-		expect(1);
+	it('normal statement : try-catch-finally', function(){
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			try{
@@ -198,19 +200,18 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 				i++;
 			}
 
-			equal(i, 2);
+			assert.equal(i, 2);
 		});
 
 		eval(code).start();
 	});
 
-	test('normal statement : new', function(){
-		expect(2);
+	it('normal statement : new', function(){
 		var code = Mr.Async.recode(function(){
 			var obj = new Object;
 			obj.a = 1;
-			ok(obj);
-			equal(obj.a, 1);
+			assert.ok(obj);
+			assert.equal(obj.a, 1);
 		});
 
 		eval(code).start();
@@ -221,172 +222,149 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 		setTimeout(function(){
 			de.resolve(1);
 		}, duration || 200);
-
-		return de;
+		return de.promise();
 	}
 
-	test('$await', function(){
-		expect(2);
+	it('$await', function(done){
 		var code = Mr.Async.recode(function(){
-			ok(true, 'waiting for 1 second.');
+			assert.ok(true, 'waiting for 1 second.');
 			$await(delay());
-			start();
-			ok(true, 'done.');
+			assert.ok(true, 'done.');
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : assignment', function(){
-		expect(3);
+	it('$await : assignment', function(done){
 		var code = Mr.Async.recode(function(){
-			ok(true, 'waiting for 1 second.');
+			assert.ok(true, 'waiting for 1 second.');
 			var i = $await(delay());
-			start();
-			ok(true, 'done.');
-			equal(i, 1);
+			assert.ok(true, 'done.');
+			assert.equal(i, 1);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : array assignment ', function(){
-		expect(5);
+	it('$await : array assignment', function(done){
 		var code = Mr.Async.recode(function(){
-			ok(true, 'waiting for 1 second.');
+			assert.ok(true, 'waiting for 1 second.');
 			var arr = $await(delay(), delay());
-			start();
-			ok(true, 'done.');
+			assert.ok(true, 'done.');
 
-			equal(arr.length, 2);
-			equal(arr[0], 1);
-			equal(arr[1], 1);
+			assert.equal(arr.length, 2);
+			assert.equal(arr[0], 1);
+			assert.equal(arr[1], 1);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : multiple assignment', function(){
-		expect(4);
+	it('$await : multiple assignment', function(done){
 		var code = Mr.Async.recode(function(){
-			var a = $await(delay()), b = $await(delay()), c = 1, d = $await(delay());
-			equal(a, 1);
-			equal(b, 1);
-			equal(c, 1);
-			equal(d, 1);
-			start();
+			var a = $await(delay()), b = $await(delay()), c = 1, d = $await(delay())			
+			assert.equal(a, 1);
+			assert.equal(b, 1);
+			assert.equal(c, 1);
+			assert.equal(d, 1);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : multiple assignment 2', function(){
-		expect(4);
+	it('$await : multiple assignment 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var a, b, c, d;
 			a = $await(delay());
 			b = $await(delay());
 			c = 1;
 			d = $await(delay());
-			equal(a, 1);
-			equal(b, 1);
-			equal(c, 1);
-			equal(d, 1);
-			start();
+			assert.equal(a, 1);
+			assert.equal(b, 1);
+			assert.equal(c, 1);
+			assert.equal(d, 1);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : if-else ', function(){
-		expect(3);
+	it('$await : if-else ', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 0, ret;
 			if(i == 0){
-				ok(true, 'waiting for 1 second');
+				assert.ok(true, 'waiting for 1 second');
 				ret = $await(delay());
-				start();
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 			}else{
 				ret = -1;
 			}
-			equal(ret, 1);
+			assert.equal(ret, 1);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : if-else 2', function(){
-		expect(3);
+	it('$await : if-else 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 1, ret;
 			if(i == 0){
 				ret = -1;
 			}else{
-				ok(true, 'waiting for 1 second in else');
+				assert.ok(true, 'waiting for 1 second in else');
 				ret = $await(delay());
-				start();
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 			}
 
-			equal(ret, 1);
+			assert.equal(ret, 1);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : for loop', function(){
-		expect(6);
+	it('$await : for loop', function(done){
 		var code = Mr.Async.recode(function(){
 			for(var i = 1; i <= 3; i++){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 			}
-			start();
+			done();
 		});
 
 		eval(code).start();
-		stop();
-
 	});
 
-	test('$await : for loop 2', function(){
-		expect(7);
+	it('$await : for loop 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var ret = 0;
 			for(var i = 1; i <= 3; i++){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				var	a = $await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 				ret += a;
 			}
-			start();
-			equal(ret, 3);
+			assert.equal(ret, 3);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : in for loop before statement ', function(){
-		expect(1);
+	it('$await : in for loop before statement ', function(done){
 		var code = Mr.Async.recode(function(){
 			for(var i = $await(delay()), len = 3; i < len ; i++);
-			equal(i, 3);
-			start();
+			assert.equal(i, 3);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : in for loop for bubblesort', function(){
-		expect(5);
+	it('$await : in for loop for bubblesort', function(done){
 	
 		var array = [10, 6, 4, 22, 1];
 	
@@ -412,300 +390,271 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 				}
 			}
 
-			equal(arr[0], 1);
-			equal(arr[1], 4);
-			equal(arr[2], 6);
-			equal(arr[3], 10);
-			equal(arr[4], 22);
-		
-			start();
+			assert.equal(arr[0], 1);
+			assert.equal(arr[1], 4);
+			assert.equal(arr[2], 6);
+			assert.equal(arr[3], 10);
+			assert.equal(arr[4], 22);
+			done();
 		});
 
 		eval(code).start(array);
-		stop();
 	});
 
-	test('$await : while loop ', function(){
-		expect(6);
+	it('$await : while loop ', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			while(i++ < 3){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 			}
-			start();
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : while loop 2', function(){
-		expect(7);
+	it('$await : while loop 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i = 0;
 			while(i++ < 3){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				var	a = $await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 				ret+= a;
 			}
-
-			start();
-			equal(ret, 3);
+			assert.equal(ret, 3);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : do-while loop ', function(){
-		expect(7);
+	it('$await : do-while loop ', function(done){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i = 1;
 			do{
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				var	a = $await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 				ret+= a;
 			}while(i++ < 3);
-			start();
-			equal(ret, 3);
+			assert.equal(ret, 3);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : do-while loop 2', function(){
-		expect(7);
+	it('$await : do-while loop 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var ret = 0, i = 1;
 			do{
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done.');
+				assert.ok(true, 'done.');
 				ret+= 1;
 			}while(i++ < 3);
-			start();
-			equal(ret, 3);
+			assert.equal(ret, 3);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : switch 1', function(){
-		expect(7)
+	it('$await : switch 1', function(done){		
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			switch(i){
 				case 0 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done.');
+					assert.ok(true, 'done.');
 					i = 1;				
 				default :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 2
 				case 1 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 3;
 			}
-			equal(i, 3);
-			start();
+			assert.equal(i, 3);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : switch 2', function(){
-		expect(7);
+	it('$await : switch 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			switch(i){
 				case 0 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done.');
+					assert.ok(true, 'done.');
 					i = 1;
 				default : 
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 2;
 				case 1 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 3;
 					break;
 			}
-			equal(i, 3);
-			start();
+			assert.equal(i, 3);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : switch 3', function(){
-		expect(5);
+	it('$await : switch 3', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			switch(i){
 				case 0 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done.');
+					assert.ok(true, 'done.');
 					i = 1;
 				default : 
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 2;				
 					break;
 				case 1 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 3;
 					break;
 			}
-			equal(i, 2);
-			start();
+			assert.equal(i, 2);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : switch 4', function(){
-		expect(3);
+	it('$await : switch 4', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 3;
 			switch(i){
 				case 0 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done.');
+					assert.ok(true, 'done.');
 					i = 1;
 					break;
 				default : 
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 2;				
 					break;
 				case 1 :
-					ok(true, 'waiting for 1 second.');
+					assert.ok(true, 'waiting for 1 second.');
 					$await(delay());
-					ok(true, 'done');
+					assert.ok(true, 'done');
 					i = 3;
 					break;
 			}
-			equal(i, 2);
-			start();
+			assert.equal(i, 2);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
 
-	test('$await : statment before async in try-catch-finally', function(){
-		expect(4);
+	it('$await : statment before async in try-catch-finally', function(done){
 		var code = Mr.Async.recode(function(){
 			try{
 				({})();
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');		
+				assert.ok(true, 'done');		
 			}catch(ex){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');
+				assert.ok(true, 'done');
 			}finally{
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');
+				assert.ok(true, 'done');
+				done();
 			}
-			start();
 		});
-		eval(code).start();
-		stop(); 
+		eval(code).start(); 
 	});
 
 /*
-	test('$await : statment in async in try-catch-finally', function(){
-		expect(6);
+	it('$await : statment in async in try-catch-finally', function(){
 		var code = Mr.Async.recode(function(){
 			try{			
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');
+				assert.ok(true, 'done');
 				({})();	
 			}catch(ex){
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');
+				assert.ok(true, 'done');
 			}finally{
-				ok(true, 'waiting for 1 second.');
+				assert.ok(true, 'waiting for 1 second.');
 				$await(delay());
-				ok(true, 'done');
+				assert.ok(true, 'done');
 			}
 			start();
 		});
 		//eval(code).start();
-		//stop(); 
+	 
 	});
 */
 
-	test('$await : property assignment', function(){
-		expect(1);
+	it('$await : property assignment', function(done){
 		var code = Mr.Async.recode(function(){
 			var a = {};
 			a.i = $await(delay());
-			equal(a.i, 1);
-			start();
+			assert.equal(a.i, 1);
+			done();
 		});
 	
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : property assignment 2', function(){
-		expect(1);
+	it('$await : property assignment 2', function(done){
 		var code = Mr.Async.recode(function(){
 			var a = { b : {}};
 			a.b.i = $await(delay());
-			equal(a.b.i, 1);
-			start();
+			assert.equal(a.b.i, 1);
+			done();
 		});
 	
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : property assignment 3', function(){
-		expect(2);
+	it('$await : property assignment 3', function(done){
 		var code = Mr.Async.recode(function(){
 			var a = { b : {}};
 			a.b.i = $await(delay(), delay());
-			equal(a.b.i[0], 1);
-			equal(a.b.i[1], 1);
-			start();
+			assert.equal(a.b.i[0], 1);
+			assert.equal(a.b.i[1], 1);
+			done();
 		});
 	
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : if-else scope', function(){
-		expect(1);
+	it('$await : if-else scope', function(done){
 		var code = Mr.Async.recode(function(){
 			var i = 0;
 			if(i == 1){
@@ -715,16 +664,14 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 				var i = $await(delay());
 				i += 2;
 			}
-			equal(i, 0);
-			start();
+			assert.equal(i, 0);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : function', function(){
-		expect(1);
+	it('$await : function', function(done){
 		var code = Mr.Async.recode(function(){
 			function d(){
 				var de = Mr.Deferred();
@@ -742,73 +689,68 @@ seajs.use(['../../lib/Mr.Async', '../../lib/Recoder/Mr.Async.Interpreter'], func
 				var i = $await(d());
 				i = 2;
 			}
-			equal(i, 0);
-			start();
+			assert.equal(i, 0);
+			done();
 		});
 
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : this', function(){
-		expect(1);
+	it('$await : this', function(done){
 		this.i = 1;
 		var code = Mr.Async.recode(function(){
-			equal(this.i, 1);
+			assert.equal(this.i, 1);
+			done();
 		});
 
 		eval(code).start();
 	});
 
-	test('$await : this 2', function(){
-		expect(2);
+	it('$await : this 2', function(done){
 		this.i = 1;
 		var code = Mr.Async.recode(function(){
 			var i = $await(delay());
-			equal(i, 1);
-			equal(this.i, 1);
-			start();
+			assert.equal(i, 1);
+			assert.equal(this.i, 1);
+			done();
 		});
 		eval(code).start(); 
-		stop();
 	});
 
-	test('$await : this 3', function(){
-		expect(4);
+	it('$await : this 3', function(done){
 		this.a = 2;
 		this.b = 3;
 		var code = Mr.Async.recode(function(){
 			var a = $await(delay()), b = $await(delay());
-			equal(a, 1);
-			equal(this.a, 2);
-			equal(b, 1);
-			equal(this.b, 3);
-			start();
+			assert.equal(a, 1);
+			assert.equal(this.a, 2);
+			assert.equal(b, 1);
+			assert.equal(this.b, 3);
+			done();
 		});
 		eval(code).start();
-		stop();
 	});
 
-	test('$await : recode with arguments', function(){
+	it('$await : recode with arguments', function(done){
 
 		var code = Mr.Async.recode(function(a, b){
-			equal(a, 1);
-			equal(b, 2);
+			assert.equal(a, 1);
+			assert.equal(b, 2);
+			done();
 		});
 		eval(code).start(1, 2);
 	});
 
-	test('$await : recode $await with arguments', function(){
+	it('$await : recode $await with arguments', function(done){
 
 		var code = Mr.Async.recode(function(a, b){
 			var a1 = $await(delay()), b1 = $await(delay());
-			equal(a, 1);
-			equal(b, 2);
-			equal(a1, 1);
-			equal(b1, 1);
-			start();
+			assert.equal(a, 1);
+			assert.equal(b, 2);
+			assert.equal(a1, 1);
+			assert.equal(b1, 1);
+			done();
 		});
 		eval(code).start(1, 2);
-		stop();
 	});
 });

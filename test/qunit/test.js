@@ -1,8 +1,4 @@
-require.config({
-	baseUrl : '../../lib/'
-})
-
-require(['./Mr.Async'], function(Mr){
+seajs.use(['../../lib/Mr.Async'], function(Mr){
 	
 	module('Mr.Async.js');
 
@@ -14,7 +10,7 @@ require(['./Mr.Async'], function(Mr){
 		ok(Mr.infinite, 'method to get a infinite object.');
 	});
 
-	test('Mr.range', function(){	
+	test('Mr.range', function(){
 		raises(function(){
 			Mr.range('a');
 		}, 'Invalid string format.');
